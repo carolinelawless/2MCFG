@@ -8,27 +8,19 @@ set.seed(9)
 
 tic()
 
-grammar <- "g0"
+
 alpha1 <- 5 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
 #gamma <- 1
-a1<- 1
+a1<- 1 #Gamma parameters for poisson
 a2<- 1
-b1<- 1
+b1<- 1 #Beta parameters for type
 b2<- 1
-c1<- 1
-c2<- 1
+c1<- 1 #Beta parameters for epsilon
+c2<- 100000
 
-#proba_emission <- 0.5 #probability of emission
-#proba_epsilon<- 0.8 #probability of emission being empty
-grammar<- "g0"
-#terminals<- c("a","b","c")
-#sentence<- c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")
-#sentences<- list()
-#number_of_sentences<- 1
-#for(i in 1:number_of_sentences){
-#sentences[[i]]<- rep(c("a","b","c","d","e"),4)
-#}
+grammar<- "cf"
+
 M<- 5000
 
 list_nonterminals_vec_long<- list()
@@ -38,6 +30,7 @@ list_e_rules<- list()
 list_gamma_matrix<- list()
 list_type_matrix<- list()
 list_epsilon_matrix<- list()
+list_terminals_matrix<- list()
 list_tree_matrix<- list()
 list_left_functions<- list()
 list_right_functions<- list()
@@ -53,18 +46,7 @@ list_e_rules[[i]]<- list()
 list_gamma_matrix[[i]]<- matrix(c(1,a1,a2),nrow=1,ncol=3)
 list_type_matrix[[i]]<- matrix(c(1,b1,b2),nrow=1,ncol=3)
 list_epsilon_matrix[[i]]<- matrix(c(1,c1,c2),nrow=1,ncol=3)
-#list_tree_matrix[[i]]<- matrix(ncol=8)
-#colnames(list_tree_matrix[[i]])<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
-#list_tree_matrix[[i]][1,2]<- 1
-#list_tree_matrix[[i]][1, 5]<- length(sentence)
-#list_tree_matrix[[i]][1, 6]<- length(sentence)
-#list_tree_matrix[[i]][1, 7]<- 1
-#list_tree_matrix[[i]][1,8]<- 1
-#list_left_functions[[i]]<- list()
-#list_right_functions[[i]]<- list()
-#list_rows[[i]]<- 1
-#list_sides[[i]]<- "left"
-#list_numbers[[i]]<- 1
+list_terminals_matrix[[i]]<- matrix(1,nrow=1,ncol=length(terminals)+1)
 }
 
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
@@ -74,12 +56,8 @@ list_e_rules1<- list_e_rules
 list_gamma_matrix1<- list_gamma_matrix
 list_type_matrix1<- list_type_matrix
 list_epsilon_matrix1<- list_epsilon_matrix
-#list_tree_matrix1<- list_tree_matrix
-#list_left_functions1<- list_left_functions
-#list_right_functions1<- list_right_functions
-#list_rows1<- list_rows
-#list_sides1<- list_sides
-#list_numbers1<- list_numbers
+list_terminals_matrix1<- list_terminals_matrix
+
 
 weights<- rep(1,M)
 
@@ -120,6 +98,7 @@ for(ttt in 1:length(sentence)){
   gamma_matrix<- list_gamma_matrix[[i]]
   type_matrix<- list_type_matrix[[i]]
   epsilon_matrix<- list_epsilon_matrix[[i]]
+  terminals_matrix<- list_terminals_matrix[[i]]
   tree_matrix<- list_tree_matrix[[i]]
   left_functions<- list_left_functions[[i]]
   right_functions<- list_right_functions[[i]]
@@ -140,9 +119,9 @@ for(ttt in 1:length(sentence)){
       nonterminal<- tree_matrix[row, 7] #current nonterminal symbol
       
       if(length(which(gamma_matrix[,1] == nonterminal))==0){
-      gamma_matrix<- rbind(gamma_matrix,c(nonterminal,1,1))
-      type_matrix<- rbind(type_matrix,c(nonterminal,1,1))
-      epsilon_matrix<- rbind(epsilon_matrix,c(nonterminal,1,1))
+      gamma_matrix<- rbind(gamma_matrix,c(nonterminal,a1,a2))
+      type_matrix<- rbind(type_matrix,c(nonterminal,b1,b2))
+      epsilon_matrix<- rbind(epsilon_matrix,c(nonterminal,c1,c2))
       }
       
       new_rule<- dp_random(nonterminal,minimum,maximum)
@@ -320,6 +299,10 @@ for(ttt in 1:length(sentence)){
       maximum<- tree_matrix[row,6]
       type<- tree_matrix[row,4]
       
+      if(length(which(terminals_matrix[,1] == nonterminal))==0){
+        terminals_matrix<- rbind(terminals_matrix,c(nonterminal,rep(1,length(terminals))))
+      }
+      
       if(type == 2){
         x<- sentence[tt]
       }else{
@@ -328,12 +311,26 @@ for(ttt in 1:length(sentence)){
       
       if (side == "left") {
         left_functions[[row]] <- x
+        y<- right_functions[[row]]
       }else if(side== "right"){
         right_functions[[row]]<- x
+        y<- left_functions[[row]]
       }
       
       complete_rule<- c(nonterminal, left_functions[[row]],right_functions[[row]])
       e_rules[[length(e_rules)+1]]<- complete_rule
+      
+      w<- w*weight_e2(nonterminal)
+       
+      ind_nt<- which(terminals_matrix[,1]==nonterminal)
+      if(x!=""){
+        ind_x<- which(terminals ==x)
+        terminals_matrix[ind_nt,(ind_x+1)]<-  terminals_matrix[ind_nt,(ind_x+1)]+1
+      }
+      if(y!=""){
+        ind_y<- which(terminals ==y)
+        terminals_matrix[ind_nt,(ind_y+1)]<-  terminals_matrix[ind_nt,(ind_y+1)]+1
+      }
       
       if(x==sentence[tt]){
         tt<- tt+1
@@ -366,6 +363,7 @@ for(ttt in 1:length(sentence)){
   list_gamma_matrix[[i]]<- gamma_matrix
   list_type_matrix[[i]]<- type_matrix
   list_epsilon_matrix[[i]]<- epsilon_matrix
+  list_terminals_matrix[[i]]<- terminals_matrix
   list_tree_matrix[[i]]<- tree_matrix
   list_left_functions[[i]]<- left_functions
   list_right_functions[[i]]<- right_functions
@@ -388,6 +386,7 @@ for(ttt in 1:length(sentence)){
     list_gamma_matrix1[[i]]<- list_gamma_matrix[[j]]
     list_type_matrix1[[i]]<- list_type_matrix[[j]]
     list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
+    list_terminals_matrix1[[i]]<- list_terminals_matrix[[j]]
     list_tree_matrix1[[i]]<- list_tree_matrix[[j]]
     list_left_functions1[[i]]<- list_left_functions[[j]]
     list_right_functions1[[i]]<- list_right_functions[[j]]
@@ -403,6 +402,7 @@ for(ttt in 1:length(sentence)){
     list_gamma_matrix[[i]]<- list_gamma_matrix1[[i]]
     list_type_matrix[[i]]<- list_type_matrix1[[i]]
     list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
+    list_terminals_matrix[[i]]<- list_terminals_matrix1[[i]]
     list_tree_matrix[[i]]<- list_tree_matrix1[[i]]
     list_left_functions[[i]]<- list_left_functions1[[i]]
     list_right_functions[[i]]<- list_right_functions1[[i]]
@@ -425,6 +425,7 @@ for(i in 1:M){
   gamma_matrix<- list_gamma_matrix[[i]]
   type_matrix<- list_type_matrix[[i]]
   epsilon_matrix<- list_epsilon_matrix[[i]]
+  terminals_matrix<- list_terminals_matrix[[i]]
   tree_matrix<- list_tree_matrix[[i]]
   left_functions<- list_left_functions[[i]]
   right_functions<- list_right_functions[[i]]
@@ -519,6 +520,10 @@ while(count > 0){
     maximum<- tree_matrix[row,6]
     type<- tree_matrix[row,4]
     
+    if(length(which(terminals_matrix[,1] == nonterminal))==0){
+      terminals_matrix<- rbind(terminals_matrix,c(nonterminal,rep(1,length(terminals))))
+    }
+    
     if(type == 2){
       x<- sentence[tt]
     }else{
@@ -527,12 +532,26 @@ while(count > 0){
     
     if (side == "left") {
       left_functions[[row]] <- x
+      y<- right_functions[[row]]
     }else if(side== "right"){
       right_functions[[row]]<- x
+      y<- left_functions[[row]]
     }
     
     complete_rule<- c(nonterminal, left_functions[[row]],right_functions[[row]])
     e_rules[[length(e_rules)+1]]<- complete_rule
+    
+    w<- w*weight_e2(nonterminal)
+
+    ind_nt<- which(terminals_matrix[,1]==nonterminal)
+    if(x!=""){
+    ind_x<- which(terminals ==x)
+    terminals_matrix[ind_nt,(ind_x+1)]<-  terminals_matrix[ind_nt,(ind_x+1)]+1
+    }
+    if(y!=""){
+      ind_y<- which(terminals ==y)
+      terminals_matrix[ind_nt,(ind_y+1)]<-  terminals_matrix[ind_nt,(ind_y+1)]+1
+    }
     
     if(length(rows)!=1){
       row <- rows[(length(rows) - 1)]
@@ -572,6 +591,7 @@ while(count > 0){
   list_gamma_matrix[[i]]<- gamma_matrix
   list_type_matrix[[i]]<- type_matrix
   list_epsilon_matrix[[i]]<- epsilon_matrix
+  list_terminals_matrix[[i]]<- terminals_matrix
   list_tree_matrix[[i]]<- tree_matrix
   list_left_functions[[i]]<- left_functions
   list_right_functions[[i]]<- right_functions
@@ -592,6 +612,7 @@ for(i in 1:M){
   list_gamma_matrix1[[i]]<- list_gamma_matrix[[j]]
   list_type_matrix1[[i]]<- list_type_matrix[[j]]
   list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
+  list_terminals_matrix1[[i]]<- list_terminals_matrix[[j]]
   list_tree_matrix1[[i]]<- list_tree_matrix[[j]]
   list_left_functions1[[i]]<- list_left_functions[[j]]
   list_right_functions1[[i]]<- list_right_functions[[j]]
@@ -607,6 +628,7 @@ for(i in 1:M){
   list_gamma_matrix[[i]]<- list_gamma_matrix1[[i]]
   list_type_matrix[[i]]<- list_type_matrix1[[i]]
   list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
+  list_terminals_matrix[[i]]<- list_terminals_matrix1[[i]]
   list_tree_matrix[[i]]<- list_tree_matrix1[[i]]
   list_left_functions[[i]]<- list_left_functions1[[i]]
   list_right_functions[[i]]<- list_right_functions1[[i]]
@@ -618,9 +640,6 @@ weights<- rep(1,M)
 
 }##ss 1:length(sentences)
 
-
-
-
 production_count<- vector(length=M)
 emission_count<- vector(length= M)
 
@@ -630,8 +649,5 @@ for(i in 1:M){
 }
 production_count
 emission_count
-
-nonterminals_vec_long
-
 toc()
-p_rules
+

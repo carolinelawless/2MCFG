@@ -1,4 +1,5 @@
 
+
 evaluate<- function(string1,x,numb){
   w<- which(string1==numb)
   s<- append(string1,x,after=w)
@@ -6,14 +7,13 @@ evaluate<- function(string1,x,numb){
   return(s)
 }
 
-set.seed(3)
 
 
 terminals<- c('a','b','c','d')
 proba_emission_model <- 0.6 #probability of emission
-proba_epsilon_model<- 0.2 #probability of emission being empty
+proba_epsilon_model<- 0.9 #probability of emission being empty
 
-number_of_sentences<- 100
+number_of_sentences<- 10
 sentences<- list()
 
 for(j in 1:number_of_sentences){
@@ -43,8 +43,10 @@ for(j in 1:number_of_sentences){
       
       if (rand==1){#production rule
         nonterminals<- c(1,1)
-        string1<- 1:2
-        string2<- 3:4
+        #string1<- c(1,3)
+        #string2<- c(4,2)
+        string1<- c(1,2)
+        string2<- c(3,4)
         N<- 2
         rule<- list(nonterminal, nonterminals, string1, string2, N)
         
@@ -214,6 +216,7 @@ for(j in 1:number_of_sentences){
     }
     tree_matrix
     row
+    left_functions[[1]]
     
     
     count1<- 0
@@ -246,8 +249,9 @@ for(j in 1:number_of_sentences){
 
 sentences1<- list()
 for(i in 1:length(sentences)){
-  if(length(sentences[[i]])>2){
+  if(length(sentences[[i]])>4){
     sentences1[[length(sentences1)+1]]<- sentences[[i]]
   }
 }
 sentences<- sentences1
+sentences

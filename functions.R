@@ -227,47 +227,71 @@ update<- function(min_or_max){
   return(tm)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-emission_random<- function(nonterminal){
-  
-  if(grammar=="g0"){
-    draw<- sample(c(0,1),1,replace = FALSE,prob = c(proba_epsilon,1-proba_epsilon))
-    if(draw ==1){
-      t_symbols<- rcat(2, emission_probas/sum(emission_probas))
-      x<- terminals[t_symbols[1]]
-      y<- terminals[t_symbols[2]]
-    }else{
-      x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-      y<- ""
+weight_e2<- function(nonterminal){
+  freq<- 0
+  if(side=="left"){
+    for(i in 1:length(e_rules)){
+      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==x & e_rules[[i]][[3]]==y){
+        freq<- freq+1
+      }
     }
-  }else if(grammar== "g1"){
-    x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-    y<- x
-  }else if(grammar=="g2"){
-    string1<- ""
-    string2<- ""
-  }else if(grammar=="g3"){
-    string1<- "a"
-    string2<- "b"
-  }else if(grammar== "alpha^2"){
-    x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-    y<- x
-  }else if(grammar=="cf"){
-    x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-    y<- ""
-  }else if(grammar=="regular"){
-    x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-    y<- ""
+  }else if(side=="right"){
+    for(i in 1:length(e_rules)){
+      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==y & e_rules[[i]][[3]]==x){
+        freq<- freq+1
+      }
+    }
   }
-  return(c(x,y))
+  ind_epsilon<- which(epsilon_matrix[,1]== nonterminal)
+  proba_epsilon_mean<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
+  proba_epsilon_mean<- 
+  if(x!="" & y!= ""){
+    w<- 1 + freq/(proba_emission_model*(1-proba_epsilon_mean))
+  }else{
+    w<- 1 + freq/(proba_emission_model*proba_epsilon_mean/2)
+  }
+  return(w)
 }
+
+
+
+
+
+
+
+
+
+
+#emission_random<- function(nonterminal){
+#  
+ ## if(grammar=="g0"){
+   # draw<- sample(c(0,1),1,replace = FALSE,prob = c(proba_epsilon,1-proba_epsilon))
+    #if(draw ==1){
+     # t_symbols<- rcat(2, emission_probas/sum(emission_probas))
+      #x<- terminals[t_symbols[1]]
+      #y<- terminals[t_symbols[2]]
+    #}else{
+     # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
+      #y<- ""
+    #}
+  #}else if(grammar== "g1"){
+   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
+    #y<- x
+  #}else if(grammar=="g2"){
+   # string1<- ""
+    #string2<- ""
+  #}else if(grammar=="g3"){
+   # string1<- "a"
+  #  string2<- "b"
+  #}else if(grammar== "alpha^2"){
+   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
+  #  y<- x
+  #}else if(grammar=="cf"){
+   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
+  #  y<- ""
+  #}else if(grammar=="regular"){
+   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
+  #  y<- ""
+  #}
+  #return(c(x,y))
+#}
