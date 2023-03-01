@@ -9,11 +9,11 @@ evaluate<- function(string1,x,numb){
 
 
 
-terminals<- c('a','b','c','d')
+terminals<- c('a','b')
 proba_emission_model <- 0.6 #probability of emission
 proba_epsilon_model<- 0.9 #probability of emission being empty
 
-number_of_sentences<- 10
+number_of_sentences<- 50
 sentences<- list()
 
 for(j in 1:number_of_sentences){

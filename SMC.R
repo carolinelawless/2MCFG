@@ -4,24 +4,21 @@ setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
 source("sim_sentences.R")
 library(tictoc)
-set.seed(9)
 
 tic()
 
-
 alpha1 <- 5 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
-#gamma <- 1
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
-b1<- 1 #Beta parameters for type
+b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 100000
+c2<- 10000
 
 grammar<- "cf"
 
-M<- 5000
+M<- 500
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -63,7 +60,7 @@ weights<- rep(1,M)
 
 for(ss in 1:length(sentences)){
   print(ss)
-ss<- 1
+
 sentence<- sentences[[ss]]
   
   for(i in 1:M){
