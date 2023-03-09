@@ -228,6 +228,20 @@ update<- function(min_or_max){
 }
 
 weight_e2<- function(nonterminal){
+  w<- 1
+  
+  nt_ind<- which(terminals_matrix[,1]==nonterminal)
+  if(x!=""){
+    x_ind<- which(terminals == x)
+    d1<- terminals_matrix[nt_ind,(x_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
+    w<- w*d1
+  }
+  if(y!=""){
+    y_ind<- which(terminals == y)
+    d2<- terminals_matrix[nt_ind,(y_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
+    w<- w*d2
+  }
+  
   freq<- 0
   if(side=="left"){
     for(i in 1:length(e_rules)){
@@ -242,14 +256,16 @@ weight_e2<- function(nonterminal){
       }
     }
   }
+  ind_emission<- which(type_matrix[,1]==nonterminal)
   ind_epsilon<- which(epsilon_matrix[,1]== nonterminal)
-  proba_epsilon_mean<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
-  proba_epsilon_mean<- 
+  proba_epsilon_expected<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
+  proba_emission_expected<- type_matrix[ind_emission,2]/(type_matrix[ind_emission,2]+ type_matrix[ind_emission,3])
   if(x!="" & y!= ""){
-    w<- 1 + freq/(proba_emission_model*(1-proba_epsilon_mean))
+    w<- w + freq/(proba_emission_expected*(1-proba_epsilon_expected))
   }else{
-    w<- 1 + freq/(proba_emission_model*proba_epsilon_mean/2)
+    w<- w + freq/(proba_emission_expected*proba_epsilon_expected/2)
   }
+
   return(w)
 }
 
@@ -295,3 +311,8 @@ weight_e2<- function(nonterminal){
   #}
   #return(c(x,y))
 #}
+
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}

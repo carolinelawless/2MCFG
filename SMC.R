@@ -1,10 +1,12 @@
 remove(list=ls())
-
+library(LaplacesDemon)
 setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
 source("sim_sentences.R")
-library(tictoc)
+sentences
 
+sentences[[length(sentences)+1]]<- c("b","b","a","a","b","b","a","a")
+library(tictoc)
 tic()
 
 alpha1 <- 5 #scaling parameter for DP over nonterminals
@@ -14,7 +16,7 @@ a2<- 1
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 10000
+c2<- 1
 
 grammar<- "cf"
 
