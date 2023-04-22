@@ -1,26 +1,43 @@
 remove(list=ls())
-library(LaplacesDemon)
-setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
+#library(LaplacesDemon)
+#setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
-source("sim_sentences.R")
-sentences
+#source("sim_sentences.R")
+#sentences
+terminals<- c("a","b","c")
+sentences<- list()
 
-sentences[[length(sentences)+1]]<- c("b","b","a","a","b","b","a","a")
+#number_of_sentences<- 1
+#for(i in 1:number_of_sentences){
+#nn<- rpois(1,2) + 2
+#nn<-3
+#sent<- sample(terminals, nn, replace=TRUE)
+#sent<- rep(sent, each=2)
+#sentences[[length(sentences)+1]]<- sent
+#}
+sentences<- list()
+for(i in 1:2){
+sentences[[i]]<- c("a","a","b","b","c","c")
+}
+
 library(tictoc)
 tic()
 
-alpha1 <- 5 #scaling parameter for DP over nonterminals
-alpha2 <- 5 #scaling parameter for DP over rules
+C_rules<- 0 #factor to add to each of the observed rules
+C_nonterminals<- 0 #factor to add to each of the observed nonterminals
+alpha1 <- 10 #scaling parameter for DP over nonterminals
+alpha2 <- 10 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
-b1<- 1 #Beta parameters for type = emission
+b1<- 1000 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 1
+c2<- 1000
 
-grammar<- "cf"
+grammar<- "g0"
+#grammar<- "cf"
 
-M<- 500
+M<- 20
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -128,6 +145,7 @@ for(ttt in 1:length(sentence)){
       rule<- new_rule[[1]]
       type<- new_rule[[2]]
       ww<- new_rule[[3]]
+      p_rules<- new_rule[[4]]
       tree_matrix[row,4]<- type
       w<- w*ww
       
@@ -152,8 +170,11 @@ for(ttt in 1:length(sentence)){
         
         left_functions[[row]] <- as.list(rule[[3]])
         right_functions[[row]] <- as.list(rule[[4]])
+        if(rule[[6]]==1){
         p_rules[[length(p_rules)+1]]<- rule
         nonterminals_vec_short<- c(nonterminals_vec_short,nonterminal)
+        }
+        
         nonterminals_vec_long<- c(nonterminals_vec_long,rule[[2]])
         
         tree_matrix[row, 3] <- rule[[5]]
@@ -650,3 +671,5 @@ production_count
 emission_count
 toc()
 
+table(nonterminals_vec_long)
+e_rules

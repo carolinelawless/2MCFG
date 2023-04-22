@@ -1,6 +1,7 @@
 library(LaplacesDemon)
 ##Draw from the DP of nonterminals ##returns a vector of length n of nonterminals
 draw_nt<- function(n){
+  w<- 1
   nt<- vector(length=n)
   ntv<-nonterminals_vec_long
   for(i in 1:n){
@@ -9,21 +10,25 @@ draw_nt<- function(n){
     }else{
       draw<- sample(c("new","old"),1,prob=c(alpha1,length(ntv)))
       if(draw=="old"){
-        s<- sample(1:length(ntv),1)
-        nt[i]<- ntv[s]
+        tab<- table(ntv)
+        s<- sample(1:length(tab), 1, replace= TRUE, prob = (tab + C_nonterminals))
+        nt[i]<- s
+        w<- w*(tab[s]/sum(tab)/((tab[s]+C_nonterminals)/sum(tab + C_nonterminals)))
       }else if(draw=="new"){
         nt[i]<- max(ntv)+1
       }
     }
     ntv<- c(ntv,nt[i])
   }
-  return(nt)
+  return(list(nt,w))
 }
 
 ##Random base production rule
 base_production_random<- function(nonterminal,gamma1){
+  weight<- 1
   if(grammar=="g0"){
-    N<- rpois(1,gamma1)+2
+    #N<- rpois(1,gamma1)+2
+    N<- 2
     sigma<- sample(1:(2*N),2*N,replace=FALSE)
     cut<- sample(1:(2*N+1),1)
     if(cut==1){
@@ -36,7 +41,9 @@ base_production_random<- function(nonterminal,gamma1){
       string1<- sigma[1:(cut-1)]
       string2<- sigma[cut:(2*N)]
     }
-    nonterminals<- draw_nt(N)
+    nonterminals_with_weights<- draw_nt(N)
+    nonterminals<- nonterminals_with_weights[[1]]
+    weight<- weight*nonterminals_with_weights[[2]]
   }else if(grammar== "g1"){
     ss<- sample(terminals,1)
     string1<- c(ss,1)
@@ -50,49 +57,66 @@ base_production_random<- function(nonterminal,gamma1){
     N<- 1
     string1<- c("a",1)
     string2<- c(2,"b")
-    nonterminals<- draw_nt(N)
+    nonterminals_with_weights<- draw_nt(N)
+    nonterminals<- nonterminals_with_weights[[1]]
+    weight<- weight*nonterminals_with_weights[[2]]
   }else if(grammar== "alpha^2"){
     N<- 1
     ts<- sample(terminals,1)
     string1<- c(ts,as.numeric(1))
     string2<- c(ts,as.numeric(2))
-    nonterminals<- draw_nt(N)
+    nonterminals_with_weights<- draw_nt(N)
+    nonterminals<- nonterminals_with_weights[[1]]
+    weight<- weight*nonterminals_with_weights[[2]]
   }else if(grammar== "cf"){
     N<- 2
     string1<- 1:2
     string2<- 3:4
-    nonterminals<- draw_nt(N)
+    nonterminals_with_weights<- draw_nt(N)
+    nonterminals<- nonterminals_with_weights[[1]]
+    weight<- weight*nonterminals_with_weights[[2]]
   }else if(grammar== "regular"){
     N<- 1
     string1<- sample(terminals,1)
     string2<- 1:2
-    nonterminals<- draw_nt(N)
+    nonterminals_with_weights<- draw_nt(N)
+    nonterminals<- nonterminals_with_weights[[1]]
+    weight<- weight*nonterminals_with_weights[[2]]
   }
   
-  r<- list(nonterminal, nonterminals, string1, string2, N)
+  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight)
   return(r)
 }
 
 kernel_parameters_function<- function(nonterminal,minimum,maximum){
-  index<- which(gamma_matrix[,1]==nonterminal)
-  gamma1<- rgamma(1,gamma_matrix[index,2],gamma_matrix[index,3])
-  proba_emission<- rbeta(1,type_matrix[index,2],type_matrix[index,3])
-  proba_epsilon<- rbeta(1,epsilon_matrix[index,2],epsilon_matrix[index,3])
+  index1<- which(gamma_matrix[,1]==nonterminal)
+  gamma1<- rgamma(1,gamma_matrix[index1,2],gamma_matrix[index1,3])
+  proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
+  proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
   p_rules_star<- list()
   q_star<- 0
   qq<- 0
+  rule_probas<- vector()
+  rule_probas_star<- vector()
+  rule_indices_star<- vector()
   if(maximum>1){#this means production rules possible
-    index = which(nonterminals_vec_short == nonterminal)
-    qq<- length(index)
-    if(length(index)>0){
-      for(i in 1:length(index)){
-        j<- index[i]
+    index2 = which(nonterminals_vec_short == nonterminal)
+
+    if(length(index2)>0){
+
+      for(i in 1:length(index2)){
+        j<- index2[i]
+        rule_probas[length(rule_probas)+1]<- p_rules[[j]][[6]]
         if(p_rules[[j]][5] <= maximum){
-          p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]]
+        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]]
+        rule_probas_star[length(rule_probas_star)+1]<- p_rules[[j]][[6]]
+        rule_indices_star[length(rule_indices_star)+1]<-j
         }
+        
       }
     }
-    q_star<- length(p_rules_star)
+    qq<- sum(rule_probas)
+    q_star<- sum(rule_probas_star)
     s<- sum(dpois(2:maximum - 2,gamma1))
   }
   if(minimum == 1 & maximum > 1){
@@ -115,12 +139,13 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
     proba_production_star<- 0
     alpha_star<- alpha2*proba_emission*proba_epsilon
   }
-  #parameter_list<- list(proba_emission_star,proba_production_star,alpha_star,p_rules_star,q_star,qq,gamma1,proba_emission,proba_epsilon)
-  parameter_list<- list(proba_emission_star,proba_production_star,alpha_star,p_rules_star,q_star,qq,gamma1,proba_emission,proba_epsilon)
+  parameter_list<- list(proba_emission_star,proba_production_star,alpha_star,p_rules_star,q_star,qq,gamma1,proba_emission,proba_epsilon,rule_probas_star,rule_probas,rule_indices_star)
     return(parameter_list)
 }
 
 dp_random<- function(nonterminal,minimum,maximum){
+  p_rules1<- p_rules
+  weight<- 1
   kernel_params<- kernel_parameters_function(nonterminal,minimum,maximum)
   proba_emission_star<- kernel_params[[1]]
   proba_production_star<- kernel_params[[2]]
@@ -131,6 +156,9 @@ dp_random<- function(nonterminal,minimum,maximum){
   gamma1<- as.numeric(kernel_params[[7]])
   proba_emission<- as.numeric(kernel_params[[8]])
   proba_epsilon<- as.numeric(kernel_params[[9]])
+  rule_probas_star<- kernel_params[[10]]
+  rule_probas<- kernel_params[[11]]
+  rule_indices_star<- kernel_params[[12]]
   draw1<- sample(0:1,1,prob=c(alpha_star,q_star))
   if(draw1==0){#new rule
     draw2<- sample(0:1,1,prob=c(proba_production_star,proba_emission_star))
@@ -139,8 +167,11 @@ dp_random<- function(nonterminal,minimum,maximum){
       while (nn > maximum) {
         rr <- base_production_random(nonterminal,gamma1)
         nn <- rr[[5]]
-        rr[[6]]<- "new"
+        #rr[[6]]<- "new"
+        
       }
+      rr[[6]]<- 1 #frequency
+      weight<- weight*rr[[7]]
       rule<- rr
       type<- 0
     }else if(draw2==1){#new (partial) emission rule
@@ -178,14 +209,22 @@ dp_random<- function(nonterminal,minimum,maximum){
       rule<- x
     }
   }else if(draw1==1){#old (production) rule
-    samp<- sample(1:q_star,1)
+    #samp<- sample(1:q_star,1)
+    samp<- sample(1:length(p_rules_star),1, prob=(rule_probas_star+C_rules))
+    
     rule<- p_rules_star[[samp]]
-    rule[[6]]<- "old"
+    rule_ind<- rule_indices_star[samp]
+   
+    #rule[[6]]<- "old"
+    freq<- rule[[6]]
+    rule[[6]]<- rule[[6]] + 1
+    p_rules1[[rule_ind]]<- rule
     type<- 1
+    weight<- freq/(sum(rule_probas_star))/((freq+C_rules)/sum(rule_probas_star+C_rules))
   }
-  weight<- (alpha_star + q_star)/(alpha2 + qq)
+  weight<- weight*(alpha_star + q_star)/(alpha2 + qq)
   #params<- c(gamma1,proba_emission,proba_epsilon)
-  output<- list(rule,type,weight)
+  output<- list(rule,type,weight,p_rules1)
   return(output)
 }
 
@@ -268,49 +307,6 @@ weight_e2<- function(nonterminal){
 
   return(w)
 }
-
-
-
-
-
-
-
-
-
-
-#emission_random<- function(nonterminal){
-#  
- ## if(grammar=="g0"){
-   # draw<- sample(c(0,1),1,replace = FALSE,prob = c(proba_epsilon,1-proba_epsilon))
-    #if(draw ==1){
-     # t_symbols<- rcat(2, emission_probas/sum(emission_probas))
-      #x<- terminals[t_symbols[1]]
-      #y<- terminals[t_symbols[2]]
-    #}else{
-     # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-      #y<- ""
-    #}
-  #}else if(grammar== "g1"){
-   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-    #y<- x
-  #}else if(grammar=="g2"){
-   # string1<- ""
-    #string2<- ""
-  #}else if(grammar=="g3"){
-   # string1<- "a"
-  #  string2<- "b"
-  #}else if(grammar== "alpha^2"){
-   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-  #  y<- x
-  #}else if(grammar=="cf"){
-   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-  #  y<- ""
-  #}else if(grammar=="regular"){
-   # x<- terminals[rcat(1,emission_probas/sum(emission_probas))]
-  #  y<- ""
-  #}
-  #return(c(x,y))
-#}
 
 getmode <- function(v) {
   uniqv <- unique(v)
