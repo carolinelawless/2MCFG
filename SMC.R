@@ -77,7 +77,7 @@ list_terminals_matrix1<- list_terminals_matrix
 weights<- rep(1,M)
 
 for(ss in 1:length(sentences)){
-  print(ss)
+  #print(ss)
 
 sentence<- sentences[[ss]]
   
