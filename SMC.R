@@ -1,9 +1,8 @@
 remove(list=ls())
 #library(LaplacesDemon)
-setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
+#setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
 #source("sim_sentences.R")
-#sentences
 terminals<- c("a","b","c")
 sentences<- list()
 
@@ -17,7 +16,7 @@ sentences<- list()
 #}
 sentences<- list()
 
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","a","a")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","a","a","c","c","b","b")
 
 
 library(tictoc)
@@ -37,7 +36,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 10000
+M<- 50000
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
