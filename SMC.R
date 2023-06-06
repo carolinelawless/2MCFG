@@ -690,6 +690,7 @@ for(j in 1:length(list_e_rules)){
   proportion2[j]<-count2/length(e_rules1)
 }
 
+print("test")
 print(list_e_rules)
 
 print(length(which(proportion1==1))/length(list_e_rules))
