@@ -666,9 +666,31 @@ for(i in 1:M){
   production_count[i]<- length(list_p_rules[[i]])
   emission_count[i]<- length(list_e_rules[[i]])
 }
-production_count
-emission_count
+#production_count
+#emission_count
 toc()
 
-table(nonterminals_vec_long)
-e_rules
+#table(nonterminals_vec_long)
+#e_rules
+
+proportion1<- vector(length = length(list_e_rules))
+proportion2<- vector(length = length(list_e_rules))
+for(j in 1:length(list_e_rules)){
+  e_rules1<- list_e_rules[[j]]
+  count1<- 0
+  count2<- 0
+  for(i in 1:length(e_rules1)){
+    rule<- e_rules1[[i]]
+    left<- rule[[2]]
+    right<- rule[[3]]
+    if(left == right){count2<- count2+1}
+    if(left == right | left == "" | right ==""){count1 <- count1+1}
+  }
+  proportion1[j]<-count1/length(e_rules1)
+  proportion2[j]<-count2/length(e_rules1)
+}
+
+print(list_e_rules)
+
+print(length(which(proportion1==1))/length(list_e_rules))
+print(length(which(proportion2==1))/length(list_e_rules))
