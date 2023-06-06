@@ -1,6 +1,6 @@
 remove(list=ls())
 #library(LaplacesDemon)
-#setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
+setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
 #source("sim_sentences.R")
 #sentences
@@ -16,17 +16,17 @@ sentences<- list()
 #sentences[[length(sentences)+1]]<- sent
 #}
 sentences<- list()
-for(i in 1:2){
-sentences[[i]]<- c("a","a","b","b","c","c")
-}
+
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","a","a")
+
 
 library(tictoc)
 tic()
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 10 #scaling parameter for DP over nonterminals
-alpha2 <- 10 #scaling parameter for DP over rules
+alpha1 <- 50 #scaling parameter for DP over nonterminals
+alpha2 <- 50 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
@@ -37,7 +37,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 20
+M<- 10000
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
