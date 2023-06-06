@@ -6,6 +6,8 @@ source("functions.R")
 terminals<- c("a","b","c")
 sentences<- list()
 
+print("test1")
+
 #number_of_sentences<- 1
 #for(i in 1:number_of_sentences){
 #nn<- rpois(1,2) + 2
@@ -690,8 +692,8 @@ for(j in 1:length(list_e_rules)){
   proportion2[j]<-count2/length(e_rules1)
 }
 
-print("test")
-print(list_e_rules)
+#print("test")
+#print(list_e_rules)
 
-print(length(which(proportion1==1))/length(list_e_rules))
-print(length(which(proportion2==1))/length(list_e_rules))
+#print(length(which(proportion1==1))/length(list_e_rules))
+#print(length(which(proportion2==1))/length(list_e_rules))
