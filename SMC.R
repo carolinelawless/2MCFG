@@ -20,7 +20,7 @@ sentences<- list()
 #}
 sentences<- list()
 
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","a","a")
 
 
 
