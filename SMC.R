@@ -18,7 +18,7 @@ terminals<- c("a","b","c")
 #sent<- rep(sent, each=2)
 #sentences[[length(sentences)+1]]<- sent
 #}
-M<- 200000
+M<- 500000
 sentences<- list()
 sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
 
