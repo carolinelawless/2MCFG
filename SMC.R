@@ -39,7 +39,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 200000
+M<- 500000
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
