@@ -6,7 +6,7 @@ tic()
 source("functions.R")
 #source("sim_sentences.R")
 terminals<- c("a","b","c")
-sentences<- list()
+
 
 
 
@@ -18,10 +18,12 @@ sentences<- list()
 #sent<- rep(sent, each=2)
 #sentences[[length(sentences)+1]]<- sent
 #}
+M<- 200000
 sentences<- list()
-
 sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
-
+sentences[[2]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
+sent= paste(sentence,collapse="")
+print(paste0("M=",M," sentence=",sent," no. sentence=",length(sentences)))
 
 
 
@@ -39,7 +41,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 200000
+
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -700,7 +702,6 @@ prop1<- length(which(proportion1==1))/length(list_e_rules)
 prop2<- length(which(proportion2==1))/length(list_e_rules)
 
 toc()
-sent= paste(sentence,collapse="")
-print(paste0("M=",M," sentence=",sent))
+
 print(prop1)
 print(prop2)
