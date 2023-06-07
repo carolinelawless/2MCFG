@@ -21,10 +21,9 @@ terminals<- c("a","b","c")
 M<- 200000
 sentences<- list()
 sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
-sentences[[2]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
+
 sent= paste(sentence,collapse="")
 print(paste0("M=",M," sentence=",sent," no. sentence=",length(sentences)))
-
 
 
 C_rules<- 0 #factor to add to each of the observed rules
