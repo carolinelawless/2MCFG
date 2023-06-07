@@ -1,3 +1,3 @@
-for(i in 1:3){
-print(i)
-}
+source("SMC.R")
+print(prop1)
+print(prop2)
