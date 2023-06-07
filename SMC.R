@@ -22,8 +22,7 @@ sentences<- list()
 sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a")
 
 
-library(tictoc)
-tic()
+
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
@@ -671,10 +670,12 @@ for(i in 1:M){
 }
 #production_count
 #emission_count
-toc()
+
 
 #table(nonterminals_vec_long)
 #e_rules
+
+print("test2")
 
 proportion1<- vector(length = length(list_e_rules))
 proportion2<- vector(length = length(list_e_rules))
@@ -699,5 +700,6 @@ for(j in 1:length(list_e_rules)){
 prop1<- length(which(proportion1==1))/length(list_e_rules)
 prop2<- length(which(proportion2==1))/length(list_e_rules)
 
+print("test3")
 print(prop2)
 print(4)
