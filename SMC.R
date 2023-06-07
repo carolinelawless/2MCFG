@@ -6,6 +6,7 @@ source("functions.R")
 terminals<- c("a","b","c")
 sentences<- list()
 
+print("test")
 
 
 #number_of_sentences<- 1
@@ -699,3 +700,4 @@ prop1<- length(which(proportion1==1))/length(list_e_rules)
 prop2<- length(which(proportion2==1))/length(list_e_rules)
 
 print(prop2)
+print(4)
