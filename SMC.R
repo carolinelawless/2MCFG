@@ -20,7 +20,7 @@ terminals<- c("a","b","c")
 #}
 M<- 500000
 sentences<- list()
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
 
 sentence<- sentences[[1]]
 sent= paste(sentence,collapse="")
