@@ -20,7 +20,7 @@ sentences<- list()
 #}
 sentences<- list()
 
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","a","a")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
 
 
 
@@ -39,7 +39,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 500000
+M<- 200000
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
