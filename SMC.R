@@ -1,4 +1,6 @@
 remove(list=ls())
+library(tictoc)
+tic()
 #library(LaplacesDemon)
 #setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
@@ -6,7 +8,6 @@ source("functions.R")
 terminals<- c("a","b","c")
 sentences<- list()
 
-print("test")
 
 
 #number_of_sentences<- 1
@@ -19,7 +20,7 @@ print("test")
 #}
 sentences<- list()
 
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c")
 
 
 
@@ -38,7 +39,7 @@ c2<- 1000
 grammar<- "g0"
 #grammar<- "cf"
 
-M<- 100000
+M<- 200000
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -79,7 +80,6 @@ list_terminals_matrix1<- list_terminals_matrix
 weights<- rep(1,M)
 
 for(ss in 1:length(sentences)){
-  #print(ss)
 
 sentence<- sentences[[ss]]
   
@@ -105,7 +105,7 @@ sentence<- sentences[[ss]]
   list_numbers1<- list_numbers
 
 for(ttt in 1:length(sentence)){
-  #print(ttt)
+  print(ttt)
   for(i in 1:M){
   tt<- ttt
   nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
@@ -675,7 +675,7 @@ for(i in 1:M){
 #table(nonterminals_vec_long)
 #e_rules
 
-print("test2")
+
 
 proportion1<- vector(length = length(list_e_rules))
 proportion2<- vector(length = length(list_e_rules))
@@ -694,12 +694,13 @@ for(j in 1:length(list_e_rules)){
   proportion2[j]<-count2/length(e_rules1)
 }
 
-#print("test")
-#print(list_e_rules)
+
 
 prop1<- length(which(proportion1==1))/length(list_e_rules)
 prop2<- length(which(proportion2==1))/length(list_e_rules)
 
-print("test3")
+toc()
+sent= paste(sentence,collapse="")
+print(paste0("M=",M," sentence=",sent))
+print(prop1)
 print(prop2)
-print(4)
