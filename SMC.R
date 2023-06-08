@@ -1,26 +1,12 @@
 remove(list=ls())
 library(tictoc)
 tic()
-#library(LaplacesDemon)
-#setwd("C:/Users/Caroline/Documents/PhD/2MCFG")
 source("functions.R")
-#source("sim_sentences.R")
 terminals<- c("a","b","c")
 
-
-
-
-#number_of_sentences<- 1
-#for(i in 1:number_of_sentences){
-#nn<- rpois(1,2) + 2
-#nn<-3
-#sent<- sample(terminals, nn, replace=TRUE)
-#sent<- rep(sent, each=2)
-#sentences[[length(sentences)+1]]<- sent
-#}
-M<- 200000
+M<- 500000
 sentences<- list()
-sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a","c","c","b","b")
+sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a")
 
 sentence<- sentences[[1]]
 sent= paste(sentence,collapse="")
@@ -663,13 +649,13 @@ weights<- rep(1,M)
 
 }##ss 1:length(sentences)
 
-production_count<- vector(length=M)
-emission_count<- vector(length= M)
+#production_count<- vector(length=M)
+#emission_count<- vector(length= M)
 
-for(i in 1:M){
-  production_count[i]<- length(list_p_rules[[i]])
-  emission_count[i]<- length(list_e_rules[[i]])
-}
+#for(i in 1:M){
+#  production_count[i]<- length(list_p_rules[[i]])
+#  emission_count[i]<- length(list_e_rules[[i]])
+#}
 #production_count
 #emission_count
 
@@ -696,12 +682,38 @@ for(j in 1:length(list_e_rules)){
   proportion2[j]<-count2/length(e_rules1)
 }
 
-
-
 prop1<- length(which(proportion1==1))/length(list_e_rules)
 prop2<- length(which(proportion2==1))/length(list_e_rules)
 
-toc()
+list_grammars_all<- list()
+for(i in 1:M){
+list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_left_functions[[i]],list_right_functions[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
+}
+names(list_grammars_all)<- c("tree","left","right","emissions","productions")
 
+x<- list_grammars_all
+unique_grammars_ordered <- function(x) {
+  ux <- unique(x)
+  tab<- tabulate(match(x,ux))
+  index_ux<-order(tab,decreasing=TRUE)
+  ux_ordered<- ux[index_ux]
+  frequencies<- sort(tab,decreasing = TRUE)
+  return(ux_ordered)
+}
+
+unique_grammars_frequencies<- function(x){
+  ux <- unique(x)
+  tab<- tabulate(match(x,ux))
+  frequencies<- sort(tab,decreasing = TRUE)
+  return(frequencies)
+}
+
+ug<- unique_grammars_ordered(list_grammars_all)
+ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
 print(prop1)
 print(prop2)
+print(ug_frequencies)
+print(ug[[1]])
+print(ug[[2]])
+
+toc()
