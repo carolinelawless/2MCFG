@@ -4,7 +4,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-M<- 1000000
+M<- 5000000
 sentences<- list()
 sentences[[1]]<- c("a","a","b","b","c","c","a","a")
 sentences[[2]]<- c("a","a","b","b","c","c","a","a")
