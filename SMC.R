@@ -4,7 +4,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-M<- 500000
+M<- 100000
 sentences<- list()
 sentences[[1]]<- c("a","a","b","b","c","c","b","b","a","a")
 
@@ -93,7 +93,7 @@ sentence<- sentences[[ss]]
   list_numbers1<- list_numbers
 
 for(ttt in 1:length(sentence)){
-  print(ttt)
+  #print(ttt)
   for(i in 1:M){
   tt<- ttt
   nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
@@ -687,9 +687,9 @@ prop2<- length(which(proportion2==1))/length(list_e_rules)
 
 list_grammars_all<- list()
 for(i in 1:M){
-list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_left_functions[[i]],list_right_functions[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
+list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
 }
-names(list_grammars_all)<- c("tree","left","right","emissions","productions")
+names(list_grammars_all)<- c("tree","emissions","productions")
 
 x<- list_grammars_all
 unique_grammars_ordered <- function(x) {
