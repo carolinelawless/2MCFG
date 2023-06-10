@@ -104,7 +104,7 @@ for(ss in 1:length(sentences)){
   list_numbers1<- list_numbers
   
   for(ttt in 1:length(sentence)){
-    print(ttt)
+    #print(ttt)
     for(i in 1:M){
       tt<- ttt
       nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
@@ -698,9 +698,9 @@ prop2<- length(which(proportion2==1))/length(list_e_rules)
 
 list_grammars_all<- list()
 for(i in 1:M){
-  list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
+  list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_left_functions[[i]], list_right_functions[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
 }
-names(list_grammars_all)<- c("tree","emissions","productions")
+names(list_grammars_all)<- c("tree","left","right","emissions","productions")
 
 x<- list_grammars_all
 unique_grammars_ordered <- function(x) {
@@ -723,9 +723,9 @@ ug<- unique_grammars_ordered(list_grammars_all)
 ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
 #print(prop1)
 #print(prop2)
-#print(ug_frequencies)
-#print(ug[[1]])
-#print(ug[[2]])
+print(ug_frequencies[1:10])
+print(ug[[1]])
+print(ug[[2]])
 
 toc()
 
