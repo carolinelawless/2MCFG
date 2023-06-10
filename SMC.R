@@ -21,6 +21,7 @@ sentence<- sentences[[1]]
 sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
+print(description)
 filename<- paste0(Sys.Date(),", ",description,".RData")
 
 C_rules<- 0 #factor to add to each of the observed rules
