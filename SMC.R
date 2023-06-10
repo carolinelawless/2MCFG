@@ -5,8 +5,8 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 1000
-number_sentences<- 1000
+M<- 100
+number_sentences<- 10
 sentences<- list()
 for(i in 1:number_sentences){
   sent_short<- sample(terminals,6,replace = TRUE)
@@ -724,9 +724,9 @@ ug<- unique_grammars_ordered(list_grammars_all)
 ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
 #print(prop1)
 #print(prop2)
-print(ug_frequencies[1:10])
+#print(ug_frequencies[1:10])
 print(ug[[1]])
-print(ug[[2]])
+#print(ug[[2]])
 
 toc()
 
