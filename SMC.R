@@ -1,4 +1,5 @@
 remove(list=ls())
+print(test)
 library(tictoc)
 tic()
 source("functions.R")
