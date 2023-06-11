@@ -5,8 +5,8 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 100
-number_sentences<- 100
+M<- 100000
+number_sentences<- 100000
 sentences<- list()
 for(i in 1:number_sentences){
   sent_short<- sample(terminals,6,replace = TRUE)
@@ -79,7 +79,7 @@ list_terminals_matrix1<- list_terminals_matrix
 weights<- rep(1,M)
 
 for(ss in 1:length(sentences)){
-  #print(paste0("ss=",ss))
+  print(paste0("ss=",ss))
   
   sentence<- sentences[[ss]]
   
@@ -677,25 +677,25 @@ for(ss in 1:length(sentences)){
 
 
 
-proportion1<- vector(length = length(list_e_rules))
-proportion2<- vector(length = length(list_e_rules))
-for(j in 1:length(list_e_rules)){
-  e_rules1<- list_e_rules[[j]]
-  count1<- 0
-  count2<- 0
-  for(i in 1:length(e_rules1)){
-    rule<- e_rules1[[i]]
-    left<- rule[[2]]
-    right<- rule[[3]]
-    if(left == right){count2<- count2+1}
-    if(left == right | left == "" | right ==""){count1 <- count1+1}
-  }
-  proportion1[j]<-count1/length(e_rules1)
-  proportion2[j]<-count2/length(e_rules1)
-}
+#proportion1<- vector(length = length(list_e_rules))
+#proportion2<- vector(length = length(list_e_rules))
+#for(j in 1:length(list_e_rules)){
+#  e_rules1<- list_e_rules[[j]]
+#  count1<- 0
+#  count2<- 0
+#  for(i in 1:length(e_rules1)){
+#    rule<- e_rules1[[i]]
+#    left<- rule[[2]]
+#    right<- rule[[3]]
+#    if(left == right){count2<- count2+1}
+#    if(left == right | left == "" | right ==""){count1 <- count1+1}
+#  }
+#  proportion1[j]<-count1/length(e_rules1)
+#  proportion2[j]<-count2/length(e_rules1)
+#}
 
-prop1<- length(which(proportion1==1))/length(list_e_rules)
-prop2<- length(which(proportion2==1))/length(list_e_rules)
+#prop1<- length(which(proportion1==1))/length(list_e_rules)
+#prop2<- length(which(proportion2==1))/length(list_e_rules)
 
 list_grammars_all<- list()
 for(i in 1:M){
@@ -722,28 +722,78 @@ unique_grammars_frequencies<- function(x){
 
 ug<- unique_grammars_ordered(list_grammars_all)
 ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
-#print(prop1)
-#print(prop2)
+print(paste0("number of grammars: ",length(ug_frequencies)))
+
+
 if(length(ug_frequencies) >=10){
+print("First 10 frequencies:")
 print(ug_frequencies[1:10])
 }
-mode<- ug[[1]]
-print(mode[[1]])
+mode1<- ug[[1]]
+mode2<- ug[[2]]
+mode3<- ug[[3]]
+print("Mode tree")
+print(mode1[[1]])
 
-if(length(mode[[4]])>=20){
+print("Mode1 emission rules:")
+if(length(mode1[[4]])>=20){
 for(i in 1:20)
-print(mode[[4]][[i]])
+print(mode1[[4]][[i]])
 }else{
-print(mode[[4]])
+print(mode1[[4]])
 }
 
-if(length(mode[[5]])>=3){
-print(mode[[5]][[2]])
-print(mode[[5]][[3]])
+print("Mode1 production rules:")
+if(length(mode1[[5]])>=3){
+print(mode1[[5]][[2]])
+print(mode1[[5]][[3]])
 }else{
-print(mode[[5]])
+print(mode1[[5]])
 }
+
+count<- 0
+count2<- 0
+for(i in 1:length(mode1[[4]])){
+e_rule<- mode1[[4]][[i]]
+if(e_rule[[2]] == e_rule[[3]]){
+count<- count + 1
+}
+if(e_rule[[2]]!=""& e_rule[[3]]!=""){
+  count2<- count2 + 1
+}
+}
+prop_pairs<- count/count2
+print(paste0("Mode1 proportion of double emissions=",prop_pairs))
+
+count<- 0
+count2<- 0
+for(i in 1:length(mode2[[4]])){
+  e_rule<- mode2[[4]][[i]]
+  if(e_rule[[2]] == e_rule[[3]]){
+    count<- count + 1
+  }
+  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
+    count2<- count2 + 1
+  }
+}
+prop_pairs<- count/count2
+print(paste0("Mode2 proportion of double emissions=",prop_pairs))
+
+count<- 0
+count2<- 0
+for(i in 1:length(mode3[[4]])){
+  e_rule<- mode3[[4]][[i]]
+  if(e_rule[[2]] == e_rule[[3]]){
+    count<- count + 1
+  }
+  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
+    count2<- count2 + 1
+  }
+}
+prop_pairs<- count/count2
+print(paste0("Mode3 proportion of double emissions=",prop_pairs))
 
 toc()
-
+print(description)
 #save(list_grammars_all,file=filename)
+
