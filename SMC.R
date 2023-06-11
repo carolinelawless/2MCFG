@@ -4,9 +4,9 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "copy"
+g<- "doubles"
 M<- 1000
-number_sentences<- 100
+number_sentences<- 10
 sentences<- list()
 for(i in 1:number_sentences){
   sent_short<- sample(terminals,6,replace = TRUE)
