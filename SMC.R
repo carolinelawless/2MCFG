@@ -6,7 +6,7 @@ terminals<- c("a","b","c")
 
 g<- "copy"
 M<- 100
-number_sentences<- 1000
+number_sentences<- 100
 sentences<- list()
 for(i in 1:number_sentences){
   sent_short<- sample(terminals,6,replace = TRUE)
@@ -724,12 +724,26 @@ ug<- unique_grammars_ordered(list_grammars_all)
 ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
 #print(prop1)
 #print(prop2)
-#print(ug_frequencies[1:10])
-print(ug[[1]][[1]])
-print(ug[[1]][[4]])
-print(ug[[1]][[5]])
-#print(ug[[2]])
+if(length(ug_frequencies) >=10){
+print(ug_frequencies[1:10])
+}
+mode<- ug[[1]]
+print(mode[[1]])
+
+if(length(mode[[4]])>=20){
+for(i in 1:20)
+print(mode[[4]][[i]])
+}else{
+print(mode[[4]])
+}
+
+if(length(mode[[5]])>=3){
+print(mode[[5]][[2]])
+print(mode[[5]][[3]])
+}else{
+print(mode[[5]])
+}
 
 toc()
 
-save(list_grammars_all,file=filename)
+#save(list_grammars_all,file=filename)
