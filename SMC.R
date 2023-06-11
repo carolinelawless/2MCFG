@@ -4,7 +4,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "copy"
+g<- "doubles"
 M<- 10000
 number_sentences<- 1000
 sentences<- list()
