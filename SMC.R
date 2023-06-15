@@ -3,14 +3,14 @@ remove(list=ls())
 library(tictoc)
 tic()
 source("functions.R")
-terminals<- c("a","b","c")
+terminals<- c("a","b","c","d")
 
 g<- "copy"
 M<- 1000
-number_sentences<- 1
+number_sentences<- 1000
 sentences<- list()
+sent_short<- sample(terminals,6,replace = TRUE)
 for(i in 1:number_sentences){
-  sent_short<- sample(terminals,6,replace = TRUE)
   if(g=="copy"){
     sentences[[i]]<- rep(sent_short,2)
   }else if(g=="doubles"){
@@ -23,7 +23,7 @@ sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
 print(description)
-filename<- paste0(Sys.Date(),"-1")
+filename<- paste0(Sys.Date(),"-2")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
