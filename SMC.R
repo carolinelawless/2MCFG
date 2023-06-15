@@ -5,7 +5,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c","d")
 
-g<- "copy"
+g<- "doubles"
 M<- 1000
 number_sentences<- 1000
 sentences<- list()
@@ -23,7 +23,7 @@ sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
 print(description)
-filename<- paste0(Sys.Date(),"-2")
+filename<- paste0(Sys.Date(),"-3")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
