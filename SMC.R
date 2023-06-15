@@ -6,7 +6,7 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 1000
+M<- 100
 number_sentences<- 10
 sentences<- list()
 for(i in 1:number_sentences){
@@ -796,5 +796,5 @@ print(paste0("Mode3 proportion of double emissions=",prop_pairs))
 
 toc()
 print(description)
-#save(list_grammars_all,file=filename)
+save(list_grammars_all,file=filename)
 
