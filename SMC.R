@@ -6,7 +6,7 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 100
+M<- 1000
 number_sentences<- 1
 sentences<- list()
 for(i in 1:number_sentences){
