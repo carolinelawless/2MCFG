@@ -3,11 +3,11 @@ remove(list=ls())
 library(tictoc)
 tic()
 source("functions.R")
-terminals<- c("a","b","c")
+terminals<- c("a","b","c","d","e","f","g")
 
 g<- "doubles"
 M<- 1000
-number_sentences<- 1000
+number_sentences<- 100
 sentences<- list()
 sent_short<- sample(terminals,5,replace = TRUE)
 for(i in 1:number_sentences){
@@ -23,7 +23,7 @@ sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
 print(description)
-filename<- paste0(Sys.Date(),"-6")
+filename<- paste0(Sys.Date(),"-7")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
