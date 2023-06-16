@@ -7,7 +7,7 @@ terminals<- c("a","b","c","d")
 
 g<- "copy"
 M<- 1000
-number_sentences<- 100
+number_sentences<- 1000
 sentences<- list()
 sent_short<- sample(terminals,5,replace = TRUE)
 for(i in 1:number_sentences){
