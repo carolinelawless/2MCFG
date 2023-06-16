@@ -7,9 +7,9 @@ terminals<- c("a","b","c","d")
 
 g<- "doubles"
 M<- 1000
-number_sentences<- 1000
+number_sentences<- 100
 sentences<- list()
-sent_short<- sample(terminals,6,replace = TRUE)
+sent_short<- sample(terminals,5,replace = TRUE)
 for(i in 1:number_sentences){
   if(g=="copy"){
     sentences[[i]]<- rep(sent_short,2)
