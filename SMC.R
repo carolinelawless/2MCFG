@@ -1,5 +1,5 @@
 remove(list=ls())
-filename<- paste0(Sys.Date(),"-copy")
+filename<- paste0(Sys.Date(),"-copy-s1000-m100")
 library(tictoc)
 tic()
 source("functions.R")
