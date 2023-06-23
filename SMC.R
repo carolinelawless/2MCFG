@@ -1,13 +1,13 @@
 remove(list=ls())
-filename<- paste0(Sys.Date(),"-copy-s1000-m100")
+filename<- paste0(Sys.Date(),"-copy-s100-m1000")
 library(tictoc)
 tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 100
-number_sentences<- 1000
+M<- 1000
+number_sentences<- 100
 sentences<- list()
 
 for(i in 1:number_sentences){
