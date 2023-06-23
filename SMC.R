@@ -1,12 +1,12 @@
 remove(list=ls())
-filename<- paste0(Sys.Date(),"-copy-s1000-m100")
+filename<- paste0(Sys.Date(),"-doubles-s1000-m100")
 library(tictoc)
 tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "copy"
-M<- 1000
+g<- "doubles"
+M<- 100
 number_sentences<- 1000
 sentences<- list()
 
