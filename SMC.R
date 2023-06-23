@@ -1,16 +1,17 @@
 remove(list=ls())
-
+filename<- paste0(Sys.Date(),"-1")
 library(tictoc)
 tic()
 source("functions.R")
-terminals<- c("a","b","c","d","e","f","g")
+terminals<- c("a","b","c")
 
 g<- "copy"
 M<- 1000
-number_sentences<- 100
+number_sentences<- 1000
 sentences<- list()
-sent_short<- sample(terminals,5,replace = TRUE)
+
 for(i in 1:number_sentences){
+  sent_short<- sample(terminals,5,replace = TRUE)
   if(g=="copy"){
     sentences[[i]]<- rep(sent_short,2)
   }else if(g=="doubles"){
@@ -23,7 +24,7 @@ sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
 print(description)
-filename<- paste0(Sys.Date(),"-8")
+
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
@@ -796,5 +797,23 @@ print(paste0("Mode3 proportion of double emissions=",prop_pairs))
 
 toc()
 print(description)
-save(list_grammars_all,file=filename)
+
+r_object <- list()
+
+r_object[[1]]<- list_nonterminals_vec_long
+r_object[[2]]<- list_nonterminals_vec_short
+r_object[[3]]<- list_p_rules
+r_object[[4]]<- list_e_rules
+r_object[[5]]<- list_gamma_matrix
+r_object[[6]]<- list_type_matrix
+r_object[[7]]<- list_epsilon_matrix
+r_object[[8]]<- list_terminals_matrix
+r_object[[9]]<- list_tree_matrix
+r_object[[10]]<- list_left_functions
+r_object[[11]]<- list_right_functions
+r_object[[12]]<- list_rows
+r_object[[13]]<- list_sides
+r_object[[14]]<- list_numbers
+
+save(r_object,file=filename)
 
