@@ -7,7 +7,7 @@ terminals<- c("a","b","c")
 
 g<- "doubles"
 M<- 1000
-number_sentences<- 1
+number_sentences<- 1000
 sentences<- list()
 
 for(i in 1:number_sentences){
