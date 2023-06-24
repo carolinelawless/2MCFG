@@ -1,5 +1,5 @@
 remove(list=ls())
-filename<- paste0(Sys.Date(),"-doubles-s100-m1000")
+
 library(tictoc)
 tic()
 source("functions.R")
@@ -7,15 +7,52 @@ terminals<- c("a","b","c")
 
 g<- "doubles"
 M<- 1000
-number_sentences<- 100
+number_sentences<- 10
+filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-m",M)
+
+number_sentences1<- 2
+number_sentences2<- 2
+number_sentences3<- 2
+number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
+len1<- 4
+len2<- 6
+len3<- 8
+len4<- 10
 sentences<- list()
 
-for(i in 1:number_sentences){
-  sent_short<- sample(terminals,5,replace = TRUE)
+for(i in 1:number_sentences1){
+   sent_short<- sample(terminals,len1/2,replace = TRUE)
   if(g=="copy"){
-    sentences[[i]]<- rep(sent_short,2)
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }else if(g=="doubles"){
-    sentences[[i]]<- rep(sent_short,each=2)
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+  }
+
+for(i in 1:number_sentences2){
+   sent_short<- sample(terminals,len2/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+  }
+
+for(i in 1:number_sentences3){
+   sent_short<- sample(terminals,len3/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+  }
+
+for(i in 1:number_sentences4){
+  sent_short<- sample(terminals,len4/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
   }
 }
 
@@ -814,6 +851,8 @@ r_object[[11]]<- list_right_functions
 r_object[[12]]<- list_rows
 r_object[[13]]<- list_sides
 r_object[[14]]<- list_numbers
+r_object[[15]]<- description
+r_object[[16]]<- list_sentences
 
 save(r_object,file=filename)
 
