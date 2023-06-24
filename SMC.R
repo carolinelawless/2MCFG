@@ -5,7 +5,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "doubles"
+g<- "copy"
 M<- 1000
 number_sentences<- 100
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-m",M)
@@ -769,8 +769,7 @@ print("First 10 frequencies:")
 print(ug_frequencies[1:10])
 }
 mode1<- ug[[1]]
-mode2<- ug[[2]]
-mode3<- ug[[3]]
+
 print("Mode tree")
 print(mode1[[1]])
 
@@ -784,6 +783,7 @@ print(mode1[[4]])
 
 print("Mode1 production rules:")
 if(length(mode1[[5]])>=3){
+print(mode1[[5]][[1]])
 print(mode1[[5]][[2]])
 print(mode1[[5]][[3]])
 }else{
@@ -804,33 +804,7 @@ if(e_rule[[2]]!=""& e_rule[[3]]!=""){
 prop_pairs<- count/count2
 print(paste0("Mode1 proportion of double emissions=",prop_pairs))
 
-count<- 0
-count2<- 0
-for(i in 1:length(mode2[[4]])){
-  e_rule<- mode2[[4]][[i]]
-  if(e_rule[[2]] == e_rule[[3]]){
-    count<- count + 1
-  }
-  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
-    count2<- count2 + 1
-  }
-}
-prop_pairs<- count/count2
-print(paste0("Mode2 proportion of double emissions=",prop_pairs))
 
-count<- 0
-count2<- 0
-for(i in 1:length(mode3[[4]])){
-  e_rule<- mode3[[4]][[i]]
-  if(e_rule[[2]] == e_rule[[3]]){
-    count<- count + 1
-  }
-  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
-    count2<- count2 + 1
-  }
-}
-prop_pairs<- count/count2
-print(paste0("Mode3 proportion of double emissions=",prop_pairs))
 
 toc()
 print(description)
