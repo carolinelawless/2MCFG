@@ -6,8 +6,8 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 1000
-number_sentences<- 100
+M<- 100
+number_sentences<- 10
 
 
 number_sentences1<- round(number_sentences/12)
