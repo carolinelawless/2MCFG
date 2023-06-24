@@ -7,7 +7,7 @@ terminals<- c("a","b","c")
 
 g<- "doubles"
 M<- 1000
-number_sentences<- 10
+number_sentences<- 100
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-m",M)
 
 number_sentences1<- 2
