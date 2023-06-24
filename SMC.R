@@ -5,7 +5,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "copy"
+g<- "doubles"
 M<- 1000
 number_sentences<- 100
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-m",M)
