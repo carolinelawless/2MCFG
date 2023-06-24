@@ -10,9 +10,9 @@ M<- 1000
 number_sentences<- 100
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-m",M)
 
-number_sentences1<- 2
-number_sentences2<- 2
-number_sentences3<- 2
+number_sentences1<- round(number_sentences/6)
+number_sentences2<- round(number_sentences/6)
+number_sentences3<- round(number_sentences/6)
 number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
 len1<- 4
 len2<- 6
