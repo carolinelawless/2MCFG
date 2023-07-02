@@ -10,43 +10,45 @@ M<- 1000
 number_sentences<- 100
 
 
-number_sentences1<- round(number_sentences/12)
-number_sentences2<- round(number_sentences/12)
-number_sentences3<- round(number_sentences/12)
-number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
+#number_sentences1<- round(number_sentences/12)
+#number_sentences2<- round(number_sentences/12)
+#number_sentences3<- round(number_sentences/12)
+#number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
+number_sentences1 <- number_sentences2 <- number_sentences3 <- 0
+number_sentences4<- number_sentences
 len1<- 4
 len2<- 6
 len3<- 8
-len4<- 20
-filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m",M, "-len_range",len1,"to",len4)
+len4<- 10
+filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m",M, "-len_range",len1,"/",len4)
 sentences<- list()
 
-for(i in 1:number_sentences1){
-   sent_short<- sample(terminals,len1/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-  }
+#for(i in 1:number_sentences1){
+ # sent_short<- sample(terminals,len1/2,replace = TRUE)
+#  if(g=="copy"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+#  }else if(g=="doubles"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+#  }
+#}
 
-for(i in 1:number_sentences2){
-   sent_short<- sample(terminals,len2/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-  }
+#for(i in 1:number_sentences2){
+#  sent_short<- sample(terminals,len2/2,replace = TRUE)
+#  if(g=="copy"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+#  }else if(g=="doubles"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+#  }
+#}
 
-for(i in 1:number_sentences3){
-   sent_short<- sample(terminals,len3/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-  }
+#for(i in 1:number_sentences3){
+#  sent_short<- sample(terminals,len3/2,replace = TRUE)
+#  if(g=="copy"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+#  }else if(g=="doubles"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+#  }
+#}
 
 for(i in 1:number_sentences4){
   sent_short<- sample(terminals,len4/2,replace = TRUE)
@@ -74,6 +76,13 @@ b1<- 1000 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
+permutation_parameters<- rep(1,factorial(5))
+if(g == "copy"){
+permutation_parameters[51]<- 119
+}else if(g == "doubles"){
+permutation_parameters[49]<- 119
+}
+
 
 grammar<- "g0"
 #grammar<- "cf"
@@ -187,6 +196,10 @@ for(ss in 1:length(sentences)){
           type<- new_rule[[2]]
           ww<- new_rule[[3]]
           p_rules<- new_rule[[4]]
+          permutation<- new_rule[[5]]
+          if(permutation>0){
+            permutation_parameters[permutation]<- permutation_parameters[permutation]+1
+          }
           tree_matrix[row,4]<- type
           w<- w*ww
           
@@ -766,8 +779,8 @@ print(paste0("number of grammars: ",length(ug_frequencies)))
 
 
 if(length(ug_frequencies) >=10){
-print("First 10 frequencies:")
-print(ug_frequencies[1:10])
+  print("First 10 frequencies:")
+  print(ug_frequencies[1:10])
 }
 mode1<- ug[[1]]
 
@@ -776,31 +789,31 @@ print(mode1[[1]])
 
 print("Mode1 emission rules:")
 if(length(mode1[[4]])>=20){
-for(i in 1:20)
-print(mode1[[4]][[i]])
+  for(i in 1:20)
+    print(mode1[[4]][[i]])
 }else{
-print(mode1[[4]])
+  print(mode1[[4]])
 }
 
 print("Mode1 production rules:")
 if(length(mode1[[5]])>=3){
-print(mode1[[5]][[1]])
-print(mode1[[5]][[2]])
-print(mode1[[5]][[3]])
+  print(mode1[[5]][[1]])
+  print(mode1[[5]][[2]])
+  print(mode1[[5]][[3]])
 }else{
-print(mode1[[5]])
+  print(mode1[[5]])
 }
 
 count<- 0
 count2<- 0
 for(i in 1:length(mode1[[4]])){
-e_rule<- mode1[[4]][[i]]
-if(e_rule[[2]] == e_rule[[3]]){
-count<- count + 1
-}
-if(e_rule[[2]]!=""& e_rule[[3]]!=""){
-  count2<- count2 + 1
-}
+  e_rule<- mode1[[4]][[i]]
+  if(e_rule[[2]] == e_rule[[3]]){
+    count<- count + 1
+  }
+  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
+    count2<- count2 + 1
+  }
 }
 prop_pairs<- count/count2
 print(paste0("Mode1 proportion of double emissions=",prop_pairs))
@@ -829,5 +842,5 @@ r_object[[14]]<- list_numbers
 r_object[[15]]<- description
 r_object[[16]]<- sentences
 
-save(r_object,file=filename)
 
+save(r_object,file=filename)
