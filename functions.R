@@ -26,65 +26,86 @@ draw_nt<- function(n){
 ##Random base production rule
 base_production_random<- function(nonterminal,gamma1){
   weight<- 1
-  if(grammar=="g0"){
-    #N<- rpois(1,gamma1)+2
-    N<- 2
-    sigma<- sample(1:(2*N),2*N,replace=FALSE)
-    cut<- sample(1:(2*N+1),1)
-    if(cut==1){
-      string1<- NA
-      string2<- sigma
-    }else if(cut==(2*N+1)){
-      string1<- sigma
-      string2<- NA
-    }else{
-      string1<- sigma[1:(cut-1)]
-      string2<- sigma[cut:(2*N)]
-    }
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
-  }else if(grammar== "g1"){
-    ss<- sample(terminals,1)
-    string1<- c(ss,1)
-    string2<- c(ss,2)
-    nonterminals<- 2
-  }else if(grammar=="g2"){
-    string1<- c("a",1,"b")
-    string2<- c("c",2,"d")
-    nonterminals<- 2
-  }else if(grammar== "g3"){
-    N<- 1
-    string1<- c("a",1)
-    string2<- c(2,"b")
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
-  }else if(grammar== "alpha^2"){
-    N<- 1
-    ts<- sample(terminals,1)
-    string1<- c(ts,as.numeric(1))
-    string2<- c(ts,as.numeric(2))
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
-  }else if(grammar== "cf"){
-    N<- 2
-    string1<- 1:2
-    string2<- 3:4
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
-  }else if(grammar== "regular"){
-    N<- 1
-    string1<- sample(terminals,1)
-    string2<- 1:2
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
+  permutation_weights<- rdirichlet(1,permutation_parameters)
+  permutation<- sample(factorial(5),1,prob=permutation_weights)
+  if((permutation-1) %/% 24 == 0){
+    cut<- 1
+  }else if((permutation-1) %/% 24 ==1){
+    cut<- 2
+  }else if((permutation-1) %/% 24 == 2){
+    cut<- 3
+  }else if((permutation-1) %/% 24 == 3){
+    cut<- 4
+  }else if((permutation-1) %/% 24 == 4){
+    cut<- 5
+  }
+  if(permutation%%24 == 1){
+    sigma<- c(1,2,3,4)
+  }else if(permutation%%24 == 2){
+    sigma<- c(1,2,4,3)
+  }else if(permutation%%24 == 3){
+    sigma<- c(1,3,2,4)
+  }else if(permutation%%24 == 4){
+    sigma<- c(1,3,4,2)
+  }else if(permutation%%24 == 5){
+    sigma<- c(1,4,2,3)
+  }else if(permutation%%24 ==6){
+    sigma<- c(1,4,3,2)
+  }else if(permutation%%24 == 7){
+    sigma<- c(2,1,3,4)
+  }else if(permutation%%24 == 8){
+    sigma<- c(2,1,4,3)
+  }else if(permutation%%24 == 9){
+    sigma<- c(2,3,1,4)
+  }else if(permutation%%24 == 10){
+    sigma<- c(2,3,4,1) 
+  }else if(permutation%%24 == 11){
+    sigma<- c(2,4,1,3)
+  }else if(permutation%%24 == 12){
+    sigma<- c(2,4,3,1) 
+  }else if(permutation%%24 == 13){
+    sigma<- c(3,1,2,4)
+  }else if(permutation%%24 == 14){
+    sigma<- c(3,1,4,2)
+  }else if(permutation%%24 == 15){
+    sigma<- c(3,2,1,4)
+  }else if(permutation%%24 == 16){
+    sigma<- c(3,2,4,1)
+  }else if(permutation%%24 == 17){
+    sigma<- c(3,4,1,2)
+  }else if(permutation%%24 ==18){
+    sigma<- c(3,4,2,1)
+  }else if(permutation%%24 == 19){
+    sigma<- c(4,1,2,3)
+  }else if(permutation%%24 == 20){
+    sigma<- c(4,1,3,2)
+  }else if(permutation%%24 == 21){
+    sigma<- c(4,2,1,3)
+  }else if(permutation%%24 == 22){
+    sigma<- c(4,2,3,1) 
+  }else if(permutation%%24 == 23){
+    sigma<- c(4,3,1,2)
+  }else if(permutation%%24 == 0){
+    sigma<- c(4,3,2,1) 
   }
   
-  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight)
+  N<- 2
+  if(cut==1){
+    string1<- NA
+    string2<- sigma
+  }else if(cut==(2*N+1)){
+    string1<- sigma
+    string2<- NA
+  }else{
+    string1<- sigma[1:(cut-1)]
+    string2<- sigma[cut:(2*N)]
+  }
+  nonterminals_with_weights<- draw_nt(N)
+  nonterminals<- nonterminals_with_weights[[1]]
+  weight<- weight*nonterminals_with_weights[[2]]
+  
+  
+  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight,permutation)
   return(r)
 }
 
@@ -144,6 +165,7 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
 }
 
 dp_random<- function(nonterminal,minimum,maximum){
+  permutation<- 0
   p_rules1<- p_rules
   weight<- 1
   kernel_params<- kernel_parameters_function(nonterminal,minimum,maximum)
@@ -171,6 +193,7 @@ dp_random<- function(nonterminal,minimum,maximum){
         
       }
       rr[[6]]<- 1 #frequency
+      permutation<- rr[[8]]
       weight<- weight*rr[[7]]
       rule<- rr
       type<- 0
@@ -224,7 +247,7 @@ dp_random<- function(nonterminal,minimum,maximum){
   }
   weight<- weight*(alpha_star + q_star)/(alpha2 + qq)
   #params<- c(gamma1,proba_emission,proba_epsilon)
-  output<- list(rule,type,weight,p_rules1)
+  output<- list(rule,type,weight,p_rules1,permutation)
   return(output)
 }
 
@@ -308,7 +331,20 @@ weight_e2<- function(nonterminal){
   return(w)
 }
 
-getmode <- function(v) {
-  uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
+
+
+unique_ordered <- function(x) {
+  ux <- unique(x)
+  tab<- tabulate(match(x,ux))
+  index_ux<-order(tab,decreasing=TRUE)
+  ux_ordered<- ux[index_ux]
+  frequencies<- sort(tab,decreasing = TRUE)
+  return(ux_ordered)
+}
+
+unique_frequencies<- function(x){
+  ux <- unique(x)
+  tab<- tabulate(match(x,ux))
+  frequencies<- sort(tab,decreasing = TRUE)
+  return(frequencies)
 }
