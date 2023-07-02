@@ -19,7 +19,7 @@ number_sentences4<- number_sentences
 len1<- 4
 len2<- 6
 len3<- 8
-len4<- 15
+len4<- 10
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len",len4)
 sentences<- list()
 
