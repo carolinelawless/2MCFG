@@ -23,32 +23,32 @@ len4<- 10
 filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len_range",len1, "to",len4)
 sentences<- list()
 
-#for(i in 1:number_sentences1){
- # sent_short<- sample(terminals,len1/2,replace = TRUE)
-#  if(g=="copy"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-#  }else if(g=="doubles"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-#  }
-#}
+for(i in 1:number_sentences1){
+ sent_short<- sample(terminals,len1/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
 
-#for(i in 1:number_sentences2){
-#  sent_short<- sample(terminals,len2/2,replace = TRUE)
-#  if(g=="copy"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-#  }else if(g=="doubles"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-#  }
-#}
+for(i in 1:number_sentences2){
+  sent_short<- sample(terminals,len2/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
 
-#for(i in 1:number_sentences3){
-#  sent_short<- sample(terminals,len3/2,replace = TRUE)
-#  if(g=="copy"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-#  }else if(g=="doubles"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-#  }
-#}
+for(i in 1:number_sentences3){
+  sent_short<- sample(terminals,len3/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
 
 for(i in 1:number_sentences4){
   sent_short<- sample(terminals,len4/2,replace = TRUE)
