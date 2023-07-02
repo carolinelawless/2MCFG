@@ -19,8 +19,8 @@ number_sentences4<- number_sentences
 len1<- 4
 len2<- 6
 len3<- 8
-len4<- 10
-filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m",M, "-len_range",len1,"/",len4)
+len4<- 15
+filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len",len4)
 sentences<- list()
 
 #for(i in 1:number_sentences1){
