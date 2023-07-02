@@ -10,17 +10,17 @@ M<- 1000
 number_sentences<- 100
 
 
-#number_sentences1<- round(number_sentences/12)
-#number_sentences2<- round(number_sentences/12)
-#number_sentences3<- round(number_sentences/12)
-#number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
-number_sentences1 <- number_sentences2 <- number_sentences3 <- 0
-number_sentences4<- number_sentences
+number_sentences1<- round(number_sentences/6)
+number_sentences2<- round(number_sentences/6)
+number_sentences3<- round(number_sentences/6)
+number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
+#number_sentences1 <- number_sentences2 <- number_sentences3 <- 0
+#number_sentences4<- number_sentences
 len1<- 4
 len2<- 6
 len3<- 8
 len4<- 10
-filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len",len4)
+filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len_range",len1, "to",len4)
 sentences<- list()
 
 #for(i in 1:number_sentences1){
