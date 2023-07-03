@@ -6,7 +6,7 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 10000
+M<- 5000
 number_sentences<- 200
 
 
