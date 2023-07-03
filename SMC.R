@@ -6,7 +6,7 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "doubles"
-M<- 5000
+M<- 10000
 number_sentences<- 200
 
 
