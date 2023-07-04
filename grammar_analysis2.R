@@ -8,10 +8,10 @@ library(LaplacesDemon)
 #load("2023-07-02-copy-s100-S49-m1000-sent_len_range4to10") 
 #load("2023-07-02-doubles-s100-S49-m1000-sent_len_range4to10") 
 #load("2023-07-03-copy-s200-S100-m10000-sent_len_range4to12")
-load("2023-07-03-doubles-s200-S100-m10000-sent_len_range4to12")
+load("2023-07-03-doubles-s200-S100-m5000-sent_len_range4to12")
 
 g<- "doubles"
-number_particles<- 10000
+number_particles<- 5000
 number_sentences<- 200
 
 terminals<- c("a","b","c")
@@ -322,6 +322,6 @@ s2<- paste0(s2,collapse = "")
 sentence_length[QQ]<- length(simulated_sentence)
 if(s1 == s2){qq<- qq+1}
 }
-print(paste0("Grammar:",g,"Particles:",number_particles,"S:",number_sentences))
+print(paste0("grammar:",g," particles:",number_particles," sentences:",number_sentences))
 print("proportion of correct estimates:")
 print(qq/Q)
