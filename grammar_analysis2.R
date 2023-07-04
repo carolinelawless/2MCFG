@@ -8,10 +8,11 @@ library(LaplacesDemon)
 #load("2023-07-02-copy-s100-S49-m1000-sent_len_range4to10") 
 #load("2023-07-02-doubles-s100-S49-m1000-sent_len_range4to10") 
 #load("2023-07-03-copy-s200-S100-m10000-sent_len_range4to12")
-#load("2023-07-03-doubles-s200-S100-m10000-sent_len_range4to12")
-load("2023-07-03-copy-s200-S100-m10000-sent_len_range4to12")
+load("2023-07-03-doubles-s200-S100-m10000-sent_len_range4to12")
 
-g<- "copy"
+g<- "doubles"
+number_particles<- 10000
+number_sentences<- 200
 
 terminals<- c("a","b","c")
 
@@ -312,15 +313,15 @@ if(g=="copy"){
 cut<- round(length(simulated_sentence)/2)
 s1<- simulated_sentence[1:cut]
 s2<- simulated_sentence[(cut+1):length(simulated_sentence)]
-s1<- paste0(s1,collapse = "")
-s2<- paste0(s2,collapse = "")
 }else if(g=="doubles"){
 s1<- simulated_sentence[seq(1,length(simulated_sentence),2)]
 s2<- simulated_sentence[seq(2,length(simulated_sentence),2)]
 }
+s1<- paste0(s1,collapse = "")
+s2<- paste0(s2,collapse = "")
 sentence_length[QQ]<- length(simulated_sentence)
 if(s1 == s2){qq<- qq+1}
 }
-
-print(paste0("Grammar:",g))
+print(paste0("Grammar:",g,"Particles:",number_particles,"S:",number_sentences))
+print("proportion of correct estimates:")
 print(qq/Q)
