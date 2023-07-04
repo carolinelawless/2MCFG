@@ -6,22 +6,20 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "doubles"
-M<- 5000
-number_sentences<- 200
+M<- 1000
+number_sentences<- 100
 
 
-number_sentences1<- round(number_sentences/8)
-number_sentences2<- round(number_sentences/8)
-number_sentences3<- round(number_sentences/8)
-number_sentences4<- round(number_sentences/8)
-number_sentences5<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3 - number_sentences4
+number_sentences1<- round(number_sentences/6)
+number_sentences2<- round(number_sentences/6)
+number_sentences3<- round(number_sentences/6)
+number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
 
 len1<- 4
 len2<- 6
 len3<- 8
 len4<- 10
-len5<- 12
-filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences5,"-m", M, "-sent_len_range",len1, "to",len5)
+filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len_range",len1, "to",len4)
 sentences<- list()
 
 for(i in 1:number_sentences1){
@@ -60,22 +58,12 @@ for(i in 1:number_sentences4){
   }
 }
 
-for(i in 1:number_sentences5){
-  sent_short<- sample(terminals,len5/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
 
 sentence<- sentences[[1]]
 sent= paste(sentence,collapse="")
 #print(paste0("M=",M," no. sentence=",length(sentences)))
 description<- paste0("G=",g,", M=",M,", S=",length(sentences))
 print(description)
-
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
