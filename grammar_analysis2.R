@@ -3,14 +3,14 @@ source("functions2.R")
 library(seqinr)
 library(LaplacesDemon)
 
-load("2023-07-02-doubles-s200-S100-m1000-sent_len_range4to12") 
-#load("2023-07-04-doubles-s100-S49-m1000-sent_len_range4to10") 
+#load("2023-07-02-doubles-s200-S100-m1000-sent_len_range4to12") 
+load("2023-07-04-doubles-s100-S49-m1000-sent_len_range4to10") 
 #load("2023-07-03-copy-s200-S100-m10000-sent_len_range4to12")
 #load("2023-07-03-doubles-s200-S100-m5000-sent_len_range4to12")
 
 g<- "doubles"
 number_particles<- 1000
-number_sentences<- 200
+number_sentences<- 100
 
 terminals<- c("a","b","c")
 
