@@ -5,7 +5,7 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "doubles"
+g<- "copy"
 M<- 1000
 number_sentences<- 100
 
@@ -840,6 +840,6 @@ r_object[[13]]<- list_sides
 r_object[[14]]<- list_numbers
 r_object[[15]]<- description
 r_object[[16]]<- sentences
-
+r_object[[17]]<- permutation_parameters
 
 save(r_object,file=filename)
