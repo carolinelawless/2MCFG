@@ -24,28 +24,114 @@ draw_nt<- function(n){
 }
 
 ##Random base production rule
+
 base_production_random<- function(nonterminal,gamma1){
-    weight<- 1
-    N<- 2
-    sigma<- sample(1:(2*N),2*N,replace=FALSE)
-    cut<- sample(1:(2*N+1),1)
-    if(cut==1){
-      string1<- NA
-      string2<- sigma
-    }else if(cut==(2*N+1)){
-      string1<- sigma
-      string2<- NA
-    }else{
-      string1<- sigma[1:(cut-1)]
-      string2<- sigma[cut:(2*N)]
-    }
-    nonterminals_with_weights<- draw_nt(N)
-    nonterminals<- nonterminals_with_weights[[1]]
-    weight<- weight*nonterminals_with_weights[[2]]
+  weight<- 1
+  permutation_weights<- rdirichlet(1,permutation_parameters)
+  permutation<- sample(factorial(5),1,prob=permutation_weights)
+  if((permutation-1) %/% 24 == 0){
+    cut<- 1
+  }else if((permutation-1) %/% 24 ==1){
+    cut<- 2
+  }else if((permutation-1) %/% 24 == 2){
+    cut<- 3
+  }else if((permutation-1) %/% 24 == 3){
+    cut<- 4
+  }else if((permutation-1) %/% 24 == 4){
+    cut<- 5
+  }
+  if(permutation%%24 == 1){
+    sigma<- c(1,2,3,4)
+  }else if(permutation%%24 == 2){
+    sigma<- c(1,2,4,3)
+  }else if(permutation%%24 == 3){
+    sigma<- c(1,3,2,4)
+  }else if(permutation%%24 == 4){
+    sigma<- c(1,3,4,2)
+  }else if(permutation%%24 == 5){
+    sigma<- c(1,4,2,3)
+  }else if(permutation%%24 ==6){
+    sigma<- c(1,4,3,2)
+  }else if(permutation%%24 == 7){
+    sigma<- c(2,1,3,4)
+  }else if(permutation%%24 == 8){
+    sigma<- c(2,1,4,3)
+  }else if(permutation%%24 == 9){
+    sigma<- c(2,3,1,4)
+  }else if(permutation%%24 == 10){
+    sigma<- c(2,3,4,1) 
+  }else if(permutation%%24 == 11){
+    sigma<- c(2,4,1,3)
+  }else if(permutation%%24 == 12){
+    sigma<- c(2,4,3,1) 
+  }else if(permutation%%24 == 13){
+    sigma<- c(3,1,2,4)
+  }else if(permutation%%24 == 14){
+    sigma<- c(3,1,4,2)
+  }else if(permutation%%24 == 15){
+    sigma<- c(3,2,1,4)
+  }else if(permutation%%24 == 16){
+    sigma<- c(3,2,4,1)
+  }else if(permutation%%24 == 17){
+    sigma<- c(3,4,1,2)
+  }else if(permutation%%24 ==18){
+    sigma<- c(3,4,2,1)
+  }else if(permutation%%24 == 19){
+    sigma<- c(4,1,2,3)
+  }else if(permutation%%24 == 20){
+    sigma<- c(4,1,3,2)
+  }else if(permutation%%24 == 21){
+    sigma<- c(4,2,1,3)
+  }else if(permutation%%24 == 22){
+    sigma<- c(4,2,3,1) 
+  }else if(permutation%%24 == 23){
+    sigma<- c(4,3,1,2)
+  }else if(permutation%%24 == 0){
+    sigma<- c(4,3,2,1) 
+  }
   
-  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight)
+  N<- 2
+  if(cut==1){
+    string1<- NA
+    string2<- sigma
+  }else if(cut==(2*N+1)){
+    string1<- sigma
+    string2<- NA
+  }else{
+    string1<- sigma[1:(cut-1)]
+    string2<- sigma[cut:(2*N)]
+  }
+  nonterminals_with_weights<- draw_nt(N)
+  nonterminals<- nonterminals_with_weights[[1]]
+  weight<- weight*nonterminals_with_weights[[2]]
+  
+  
+  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight,permutation)
   return(r)
 }
+
+#base_production_random<- function(nonterminal,gamma1){
+#    weight<- 1
+#    N<- 2
+#    sigma<- sample(1:(2*N),2*N,replace=FALSE)
+#    cut<- sample(1:(2*N+1),1)
+#    if(cut==1){
+#      string1<- NA
+#      string2<- sigma
+#    }else if(cut==(2*N+1)){
+#      string1<- sigma
+#      string2<- NA
+#    }else{
+#      string1<- sigma[1:(cut-1)]
+#      string2<- sigma[cut:(2*N)]
+#    }
+#    nonterminals_with_weights<- draw_nt(N)
+#    nonterminals<- nonterminals_with_weights[[1]]
+#    weight<- weight*nonterminals_with_weights[[2]]
+  
+#  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight)
+#  return(r)
+#}
 
 dp_random<- function(nonterminal,minimum,maximum){
 draws<- vector()
