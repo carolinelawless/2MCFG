@@ -41,6 +41,7 @@ list_sides<- r_object[[13]]
 list_numbers<- r_object[[14]]
 description<- r_object[[15]]
 sentences<- r_object[[16]]
+permutation_parameters<- r_object[[17]]
 
 list_grammars_all<- list()
 M<- length(list_tree_matrix)
