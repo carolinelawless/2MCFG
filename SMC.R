@@ -1,14 +1,18 @@
 remove(list=ls())
-
-library(tictoc)
-tic()
 source("functions.R")
-terminals<- c("a","b","c")
+library(tictoc)
+
+tic()
 
 g<- "copy"
 M<- 5000
 number_sentences<- 100
+alpha1 <- 5000 #scaling parameter for DP over nonterminals
+alpha2 <- 5000 #scaling parameter for DP over rules
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
+filename<- paste0(Sys.Date(),"_",description)
 
+terminals<- c("a","b","c")
 number_sentences1<- round(number_sentences/6)
 number_sentences2<- round(number_sentences/6)
 number_sentences3<- round(number_sentences/6)
@@ -63,8 +67,6 @@ sent= paste(sentence,collapse="")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 5000 #scaling parameter for DP over nonterminals
-alpha2 <- 5000 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
@@ -79,9 +81,6 @@ if(g == "copy"){
 }
 
 grammar<- "g0"
-
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
-filename<- paste0(Sys.Date(),"_",description)
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
