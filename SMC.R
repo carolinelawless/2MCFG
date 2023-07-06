@@ -4,7 +4,7 @@ library(tictoc)
 
 tic()
 
-g<- "doubles"
+g<- "copy"
 M<- 20000
 number_sentences<- 100
 alpha1 <- 50 #scaling parameter for DP over nonterminals
