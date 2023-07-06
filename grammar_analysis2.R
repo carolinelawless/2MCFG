@@ -339,6 +339,7 @@ r_object2[[7]]<- p_rules
 r_object2[[8]]<- p_rule_frequencies
 r_object2[[9]]<- unique_ordered(e_rules)
 r_object2[[10]]<- unique_frequencies(e_rules)
+r_object2[[11]]<- nonterminals_vec_long
 
 filename<- paste0(Sys.Date(),"_",description,"_analysis")
 save(r_object2,file=filename)
