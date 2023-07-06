@@ -80,8 +80,6 @@ if(g == "copy"){
   permutation_parameters[49]<- 119
 }
 
-grammar<- "g0"
-
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
 list_p_rules<- list()
@@ -119,7 +117,6 @@ list_gamma_matrix1<- list_gamma_matrix
 list_type_matrix1<- list_type_matrix
 list_epsilon_matrix1<- list_epsilon_matrix
 list_terminals_matrix1<- list_terminals_matrix
-
 
 weights<- rep(1,M)
 
@@ -442,7 +439,7 @@ for(ss in 1:length(sentences)){
       list_numbers[[i]]<- numbers
       weights[i]<- w
       
-     vec_max_nonterminals[i]<- max(nonterminals_vec_long) 
+      vec_max_nonterminals[i]<- max(nonterminals_vec_long) 
     }#for i in 1:M   
     list_max_nonterminals[[length(list_max_nonterminals)+1]]<- vec_max_nonterminals
     
@@ -712,49 +709,12 @@ for(ss in 1:length(sentences)){
   
 }##ss 1:length(sentences)
 
-#production_count<- vector(length=M)
-#emission_count<- vector(length= M)
-
-#for(i in 1:M){
-#  production_count[i]<- length(list_p_rules[[i]])
-#  emission_count[i]<- length(list_e_rules[[i]])
-#}
-#production_count
-#emission_count
-
-
-#table(nonterminals_vec_long)
-#e_rules
-
-
-
-#proportion1<- vector(length = length(list_e_rules))
-#proportion2<- vector(length = length(list_e_rules))
-#for(j in 1:length(list_e_rules)){
-#  e_rules1<- list_e_rules[[j]]
-#  count1<- 0
-#  count2<- 0
-#  for(i in 1:length(e_rules1)){
-#    rule<- e_rules1[[i]]
-#    left<- rule[[2]]
-#    right<- rule[[3]]
-#    if(left == right){count2<- count2+1}
-#    if(left == right | left == "" | right ==""){count1 <- count1+1}
-#  }
-#  proportion1[j]<-count1/length(e_rules1)
-#  proportion2[j]<-count2/length(e_rules1)
-#}
-
-#prop1<- length(which(proportion1==1))/length(list_e_rules)
-#prop2<- length(which(proportion2==1))/length(list_e_rules)
-
 list_grammars_all<- list()
 for(i in 1:M){
   list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_left_functions[[i]], list_right_functions[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
 }
 names(list_grammars_all)<- c("tree","left","right","emissions","productions")
 
-x<- list_grammars_all
 unique_grammars_ordered <- function(x) {
   ux <- unique(x)
   tab<- tabulate(match(x,ux))
@@ -771,8 +731,8 @@ unique_grammars_frequencies<- function(x){
   return(frequencies)
 }
 
-ug<- unique_grammars_ordered(list_grammars_all)
-ug_frequencies<- unique_grammars_frequencies(list_grammars_all)
+ug<- unique_ordered(list_grammars_all)
+ug_frequencies<- unique_frequencies(list_grammars_all)
 print(paste0("number of grammars: ",length(ug_frequencies)))
 
 
