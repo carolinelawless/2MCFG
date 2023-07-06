@@ -3,9 +3,9 @@ source("functions2.R")
 library(seqinr)
 library(LaplacesDemon)
 
-load("2023-07-06_G=doubles_M=1000_S=100_alpha1=alpha2=500") 
+load("2023-07-06_G=copy_M=1000_S=100_alpha1=alpha2=500") 
 
-g<- "doubles"
+g<- "copy"
 M<- 1000
 number_sentences<- 100
 
