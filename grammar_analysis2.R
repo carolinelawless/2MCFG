@@ -5,7 +5,7 @@ library(LaplacesDemon)
 
 date<- "2023-07-06"
 g<- "doubles"
-M<- 1000
+M<- 20000
 S<- 100
 alpha1<-alpha2<- 50
 b1<- 10 #Beta parameters for type = emission
