@@ -6,8 +6,8 @@ source("functions.R")
 terminals<- c("a","b","c")
 
 g<- "copy"
-M<- 1
-number_sentences<- 10
+M<- 1000
+number_sentences<- 100
 
 number_sentences1<- round(number_sentences/6)
 number_sentences2<- round(number_sentences/6)
@@ -18,7 +18,7 @@ number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - n
 len1<- 4
 len2<- 6
 len3<- 8
-len4<- 12
+len4<- 10
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences)
 filename<- paste0(Sys.Date(),"_",description)
 sentences<- list()
@@ -79,11 +79,8 @@ if(g == "copy"){
   permutation_parameters[49]<- 119
 }
 
-
 grammar<- "g0"
 #grammar<- "cf"
-
-
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -99,7 +96,6 @@ list_right_functions<- list()
 list_rows<- list()
 list_sides<- list()
 list_numbers<- list()
-
 
 list_max_nonterminals<- list()
 vec_max_nonterminals<- vector(length = M)
