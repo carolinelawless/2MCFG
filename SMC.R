@@ -63,8 +63,8 @@ sent= paste(sentence,collapse="")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 500 #scaling parameter for DP over nonterminals
-alpha2 <- 500 #scaling parameter for DP over rules
+alpha1 <- 5000 #scaling parameter for DP over nonterminals
+alpha2 <- 5000 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
