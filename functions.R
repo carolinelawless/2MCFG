@@ -338,7 +338,6 @@ unique_ordered <- function(x) {
   tab<- tabulate(match(x,ux))
   index_ux<-order(tab,decreasing=TRUE)
   ux_ordered<- ux[index_ux]
-  frequencies<- sort(tab,decreasing = TRUE)
   return(ux_ordered)
 }
 
