@@ -5,10 +5,10 @@ library(tictoc)
 tic()
 
 g<- "copy"
-M<- 5000
+M<- 1000
 number_sentences<- 100
-alpha1 <- 5000 #scaling parameter for DP over nonterminals
-alpha2 <- 5000 #scaling parameter for DP over rules
+alpha1 <- 50 #scaling parameter for DP over nonterminals
+alpha2 <- 50 #scaling parameter for DP over rules
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
 filename<- paste0(Sys.Date(),"_",description)
 
