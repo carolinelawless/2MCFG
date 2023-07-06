@@ -19,8 +19,7 @@ len1<- 4
 len2<- 6
 len3<- 8
 len4<- 10
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences)
-filename<- paste0(Sys.Date(),"_",description)
+
 sentences<- list()
 
 for(i in 1:number_sentences1){
@@ -64,8 +63,8 @@ sent= paste(sentence,collapse="")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 50 #scaling parameter for DP over nonterminals
-alpha2 <- 50 #scaling parameter for DP over rules
+alpha1 <- 500 #scaling parameter for DP over nonterminals
+alpha2 <- 500 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
@@ -80,7 +79,9 @@ if(g == "copy"){
 }
 
 grammar<- "g0"
-#grammar<- "cf"
+
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
+filename<- paste0(Sys.Date(),"_",description)
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
