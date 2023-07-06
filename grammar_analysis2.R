@@ -3,10 +3,10 @@ source("functions2.R")
 library(seqinr)
 library(LaplacesDemon)
 
-load("2023-07-06_G=copy_M=1000_S=100_alpha1=alpha2=5000") 
+load("2023-07-06_G=copy_M=5000_S=100_alpha1=alpha2=5000") 
 
 g<- "doubles"
-M<- 1000
+M<- 5000
 number_sentences<- 100
 
 terminals<- c("a","b","c")
