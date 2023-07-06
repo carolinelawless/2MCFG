@@ -5,25 +5,26 @@ tic()
 source("functions.R")
 terminals<- c("a","b","c")
 
-g<- "doubles"
-M<- 1000
-number_sentences<- 100
-
+g<- "copy"
+M<- 1
+number_sentences<- 10
 
 number_sentences1<- round(number_sentences/6)
 number_sentences2<- round(number_sentences/6)
 number_sentences3<- round(number_sentences/6)
 number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
-
+#number_sentences1 <- number_sentences2 <- number_sentences3 <- 0
+#number_sentences4<- number_sentences
 len1<- 4
 len2<- 6
 len3<- 8
-len4<- 10
-filename<- paste0(Sys.Date(),"-",g,"-s",number_sentences,"-S",number_sentences4,"-m", M, "-sent_len_range",len1, "to",len4)
+len4<- 12
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences)
+filename<- paste0(Sys.Date(),"_",description)
 sentences<- list()
 
 for(i in 1:number_sentences1){
- sent_short<- sample(terminals,len1/2,replace = TRUE)
+  sent_short<- sample(terminals,len1/2,replace = TRUE)
   if(g=="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }else if(g=="doubles"){
@@ -58,12 +59,8 @@ for(i in 1:number_sentences4){
   }
 }
 
-
 sentence<- sentences[[1]]
 sent= paste(sentence,collapse="")
-#print(paste0("M=",M," no. sentence=",length(sentences)))
-description<- paste0("G=",g,", M=",M,", S=",length(sentences))
-print(description)
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
@@ -77,9 +74,9 @@ c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 permutation_parameters<- rep(1,factorial(5))
 if(g == "copy"){
-permutation_parameters[51]<- 119
+  permutation_parameters[51]<- 119
 }else if(g == "doubles"){
-permutation_parameters[49]<- 119
+  permutation_parameters[49]<- 119
 }
 
 
@@ -102,6 +99,10 @@ list_right_functions<- list()
 list_rows<- list()
 list_sides<- list()
 list_numbers<- list()
+
+
+list_max_nonterminals<- list()
+vec_max_nonterminals<- vector(length = M)
 
 for(i in 1:M){
   list_nonterminals_vec_long[[i]]<- 1
@@ -445,8 +446,9 @@ for(ss in 1:length(sentences)){
       list_numbers[[i]]<- numbers
       weights[i]<- w
       
-      
+     vec_max_nonterminals[i]<- max(nonterminals_vec_long) 
     }#for i in 1:M   
+    list_max_nonterminals[[length(list_max_nonterminals)+1]]<- vec_max_nonterminals
     
     particles<- sample(1:M,M,weights,replace=TRUE)
     
@@ -486,7 +488,8 @@ for(ss in 1:length(sentences)){
     weights1<- weights
     weights<- rep(1,M)
     
-  }#ttt
+    
+  }#ttt in 1:length(sentence)
   
   
   
@@ -816,8 +819,6 @@ for(i in 1:length(mode1[[4]])){
 }
 prop_pairs<- count/count2
 print(paste0("Mode1 proportion of double emissions=",prop_pairs))
-
-
 
 toc()
 print(description)
