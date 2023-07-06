@@ -7,7 +7,7 @@ date<- "2023-07-06"
 g<- "doubles"
 M<- 1000
 S<- 100
-alpha1<-alpha2<- 500
+alpha1<-alpha2<- 50
 name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha1)
 load(name)
 
