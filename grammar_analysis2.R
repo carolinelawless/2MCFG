@@ -4,7 +4,7 @@ library(seqinr)
 library(LaplacesDemon)
 
 date<- "2023-07-06"
-g<- "copy"
+g<- "doubles"
 M<- 1000
 S<- 100
 alpha1<-alpha2<- 50
