@@ -3,7 +3,7 @@ source("functions2.R")
 library(seqinr)
 library(LaplacesDemon)
 
-load("2023-07-06_G=doubles_M=1000_S=100") 
+load("2023-07-06_G=doubles_M=1000_S=100_alpha1=alpha2=500") 
 
 g<- "doubles"
 M<- 1000
@@ -13,8 +13,8 @@ terminals<- c("a","b","c")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 50 #scaling parameter for DP over nonterminals
-alpha2 <- 50 #scaling parameter for DP over rules
+alpha1 <- 500 #scaling parameter for DP over nonterminals
+alpha2 <- 500 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
