@@ -8,21 +8,19 @@ g<- "doubles"
 M<- 1000
 S<- 100
 alpha1<-alpha2<- 50
-name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha1)
+b1<- 10 #Beta parameters for type = emission
+b2<- 1
+c1<- 1 #Beta parameters for epsilon
+c2<- 1000
+name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_b1=",b1)
 load(name)
 
 terminals<- c("a","b","c")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 50 #scaling parameter for DP over nonterminals
-alpha2 <- 50 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
-b1<- 1000 #Beta parameters for type = emission
-b2<- 1
-c1<- 1 #Beta parameters for epsilon
-c2<- 1000
 
 list_nonterminals_vec_long<- r_object[[1]]
 list_nonterminals_vec_short<- r_object[[2]]
