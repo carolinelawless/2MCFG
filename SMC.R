@@ -9,7 +9,11 @@ M<- 1000
 number_sentences<- 100
 alpha1 <- 50 #scaling parameter for DP over nonterminals
 alpha2 <- 50 #scaling parameter for DP over rules
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
+b1<- 10 #Beta parameters for type = emission
+b2<- 1
+c1<- 1 #Beta parameters for epsilon
+c2<- 1000
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_b1=",b1)
 filename<- paste0(Sys.Date(),"_",description)
 
 terminals<- c("a","b","c")
@@ -69,10 +73,6 @@ C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
-b1<- 1000 #Beta parameters for type = emission
-b2<- 1
-c1<- 1 #Beta parameters for epsilon
-c2<- 1000
 permutation_parameters<- rep(1,factorial(5))
 if(g == "copy"){
   permutation_parameters[51]<- 119
