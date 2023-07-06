@@ -3,18 +3,20 @@ source("functions2.R")
 library(seqinr)
 library(LaplacesDemon)
 
-load("2023-07-06_G=doubles_M=5000_S=100_alpha1=alpha2=5000") 
-
+date<- "2023-07-06"
 g<- "doubles"
-M<- 5000
-number_sentences<- 100
+M<- 1000
+S<- 100
+alpha1<-alpha2<- 500
+name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha1)
+load(name)
 
 terminals<- c("a","b","c")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-alpha1 <- 500 #scaling parameter for DP over nonterminals
-alpha2 <- 500 #scaling parameter for DP over rules
+alpha1 <- 50 #scaling parameter for DP over nonterminals
+alpha2 <- 50 #scaling parameter for DP over rules
 a1<- 1 #Gamma parameters for poisson
 a2<- 1
 b1<- 1000 #Beta parameters for type = emission
@@ -41,7 +43,6 @@ sentences<- r_object[[16]]
 permutation_parameters<- r_object[[17]]
 
 list_grammars_all<- list()
-#M<- length(list_tree_matrix)
 for(i in 1:M){
   list_grammars_all[[i]]<- list(list_e_rules[[i]],list_p_rules[[i]], list_nonterminals_vec_short[[i]],list_nonterminals_vec_long[[i]],list_gamma_matrix[[i]],list_type_matrix[[i]],list_epsilon_matrix[[i]],list_terminals_matrix[[i]]) 
 }
@@ -49,8 +50,6 @@ names(list_grammars_all)<- c("emissions","productions","nt_short","nt_long","gam
 
 ug<- unique_ordered(list_grammars_all)
 ug_frequencies<- unique_frequencies(list_grammars_all)
-
-#### construct a tree
 
 grammar<- ug[[1]]
 e_rules<- grammar[[1]]
@@ -63,8 +62,6 @@ epsilon_matrix<- grammar[[7]]
 terminals_matrix<- grammar[[8]]
 e_rules_ordered<- unique_ordered(e_rules)
 e_rules_frequencies<- unique_frequencies(e_rules)
-
-
 ####
 p_rule_frequencies<- vector(length = length(p_rules))
 for(i in 1:length(p_rules)){
@@ -73,11 +70,13 @@ for(i in 1:length(p_rules)){
 p_rule_mode<- p_rules[[which.max(p_rule_frequencies)]]
 ####
 
-Q<- 1000
+Q<- 1000 #number of sentences to generate
 sentence_length<- vector(length=Q)
 edit_distance<- vector(length = Q)
 qq<- 0
 for(QQ in 1:Q){
+  
+  #### construct a tree
   
   stop<- TRUE
   while(stop == TRUE){
@@ -156,9 +155,6 @@ for(QQ in 1:Q){
       row_vec<- tree_matrix[,3]
     }
   }
-  stop
-  tree_matrix
-  
   
   ###evaluate the tree
   
@@ -339,10 +335,10 @@ r_object2[[7]]<- p_rules
 r_object2[[8]]<- p_rule_frequencies
 r_object2[[9]]<- unique_ordered(e_rules)
 r_object2[[10]]<- unique_frequencies(e_rules)
-r_object2[[11]]<- nonterminals_vec_long
 
 filename<- paste0(Sys.Date(),"_",description,"_analysis")
 save(r_object2,file=filename)
 #(edit_distance,breaks= max(edit_distance)+1, main = "", xlab= "Edit distance", freq=FALSE)
 #hist(sentence_length,breaks=max(sentence_length)+1, main = "", xlab = "Sentence length",freq = FALSE)
 #hist(edit_distance/sentence_length,main="", xlab = "(edit distance)/length", freq=FALSE)
+
