@@ -9,7 +9,7 @@ M<- 20000
 S<- 100
 alpha1<-alpha2<- 50
 b1<- 10 #Beta parameters for type = emission
-b2<- 1
+b2<- 1000
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_b1=",b1)
