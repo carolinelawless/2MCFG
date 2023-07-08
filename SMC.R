@@ -7,14 +7,14 @@ tic()
 g<- "doubles"
 M<- 10000
 number_sentences<- 100
-alpha1 <- 500 #scaling parameter for DP over nonterminals
-alpha2 <- 500 #scaling parameter for DP over rules
-b1<- 1000 #Beta parameters for type = emission
+alpha1 <- 50 #scaling parameter for DP over nonterminals
+alpha2 <- 50 #scaling parameter for DP over rules
+b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1,"_b1=",b1)
 filename<- paste0(Sys.Date(),"_",description)
 
 terminals<- c("a","b","c")
