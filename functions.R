@@ -137,21 +137,29 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
       }
     }
   }
-  if(minimum == 1 & maximum > 1){
+  if(minimum == 1 & maximum > 2){
     proba_emission_star<- proba_emission
     alpha_star<- alpha2
   }
-  if(minimum == 2){
+  if(minimum == 1 & maximum == 2){
+  proba_emission_star<- 1
+  alpha_star<- alpha2*proba_emission
+  }
+  if(minimum == 1 & maximum == 1){
+  proba_emission_star<- 1
+  alpha_star<- alpha2*proba_emission*proba_epsilon
+  }
+  if(minimum == 2 & maximum ==2){
+  proba_emission_star<- 1
+  alpha_star<- alpha2*proba_emission*(1-proba_epsilon)
+  }
+  if(minimum == 2 & maximum > 2){
     proba_emission_star<- (1-proba_epsilon)*proba_emission/(1-proba_emission+(1-proba_epsilon)*proba_emission)
     alpha_star<- alpha2*(1-proba_emission + (1-proba_epsilon)*proba_emission)
   }
   if(minimum > 2){
     proba_emission_star<- 0
     alpha_star<- alpha2*(1-proba_emission)
-  }
-  if(maximum == 1){
-    proba_emission_star<- 1
-    alpha_star<- alpha2*proba_emission*proba_epsilon
   }
   parameter_list<- list(alpha_star,proba_emission_star,proba_epsilon,p_rules_star,q_star,rule_probas_star,q,rule_indices_star)
   return(parameter_list)
