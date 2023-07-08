@@ -25,9 +25,9 @@ draw_nt<- function(n){
 
 ##Random base production rule
 
-base_production_random<- function(nonterminal,gamma1){
+base_production_random<- function(nonterminal){
   weight<- 1
-  permutation_weights<- rdirichlet(1,permutation_parameters)
+  permutation_weights<- rdirichlet(1,permutations_vec)
   permutation<- sample(factorial(5),1,prob=permutation_weights)
   if((permutation-1) %/% 24 == 0){
     cut<- 1
@@ -110,29 +110,6 @@ base_production_random<- function(nonterminal,gamma1){
   return(r)
 }
 
-#base_production_random<- function(nonterminal,gamma1){
-#    weight<- 1
-#    N<- 2
-#    sigma<- sample(1:(2*N),2*N,replace=FALSE)
-#    cut<- sample(1:(2*N+1),1)
-#    if(cut==1){
-#      string1<- NA
-#      string2<- sigma
-#    }else if(cut==(2*N+1)){
-#      string1<- sigma
-#      string2<- NA
-#    }else{
-#      string1<- sigma[1:(cut-1)]
-#      string2<- sigma[cut:(2*N)]
-#    }
-#    nonterminals_with_weights<- draw_nt(N)
-#    nonterminals<- nonterminals_with_weights[[1]]
-#    weight<- weight*nonterminals_with_weights[[2]]
-  
-#  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight)
-#  return(r)
-#}
-
 dp_random<- function(nonterminal,minimum,maximum){
 draws<- vector()
 stop<- FALSE
@@ -162,7 +139,6 @@ draw1<- sample(0:1,1,prob=c(alpha2,old_rule_total))
 draws<- c(draws,draw1)
 if(draw1==0){#new rule
 index1<- which(type_matrix[,1]==nonterminal)
-gamma1<- rgamma(1,gamma_matrix[index1,2],gamma_matrix[index1,3])
 proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
 proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
 
@@ -170,7 +146,7 @@ draw2<- sample(0:1,1,prob=c(1-proba_emission,proba_emission))
 draws<- c(draws,draw2)
 if(draw2==0){#new production
 if(maximum == 1){stop<- TRUE}
-rule<- base_production_random(nonterminal,gamma1)
+rule<- base_production_random(nonterminal)
 }else{#new emission
 if(minimum > 2){stop<- TRUE}
 index2<- which(terminals_matrix[,1]==nonterminal)
