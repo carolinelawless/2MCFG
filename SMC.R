@@ -14,7 +14,7 @@ b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1,"_b1=",b1)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1,"_b1=",b1,"_function_modif")
 print(description)
 filename<- paste0(Sys.Date(),"_",description)
 
