@@ -4,10 +4,10 @@ library(seqinr)
 library(LaplacesDemon)
 
 date<- "2023-07-08"
-g<- "doubles"
+g<- "copy"
 M<- 1000
 S<- 100
-alpha1<-alpha2<- 500
+alpha1<-alpha2<- 50
 b1<- 1000 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
