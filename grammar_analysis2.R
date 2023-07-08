@@ -1,291 +1,343 @@
-#library(LaplacesDemon)
-##Draw from the DP of nonterminals ##returns a vector of length n of nonterminals
-draw_nt<- function(n){
-  w<- 1
-  nt<- vector(length=n)
-  ntv<-nonterminals_vec_long
-  for(i in 1:n){
-    if(length(ntv)==0){
-      nt[i]<- 1
-    }else{
-      draw<- sample(c("new","old"),1,prob=c(alpha1,length(ntv)))
-      if(draw=="old"){
-        tab<- table(ntv)
-        s<- sample(1:length(tab), 1, replace= TRUE, prob = (tab + C_nonterminals))
-        nt[i]<- s
-        w<- w*(tab[s]/sum(tab)/((tab[s]+C_nonterminals)/sum(tab + C_nonterminals)))
-      }else if(draw=="new"){
-        nt[i]<- max(ntv)+1
-      }
-    }
-    ntv<- c(ntv,nt[i])
-  }
-  return(list(nt,w))
+remove(list=ls())
+source("functions2.R")
+library(seqinr)
+library(LaplacesDemon)
+
+date<- "2023-07-08"
+g<- "copy"
+M<- 1000
+S<- 100
+alpha1<-alpha2<- 50
+b1<- 1000 #Beta parameters for type = emission
+b2<- 1
+c1<- 1 #Beta parameters for epsilon
+c2<- 1000
+#name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_b1=",b1)
+name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha2)
+load(name)
+
+terminals<- c("a","b","c")
+
+C_rules<- 0 #factor to add to each of the observed rules
+C_nonterminals<- 0 #factor to add to each of the observed nonterminals
+
+
+list_nonterminals_vec_long<- r_object[[1]]
+list_nonterminals_vec_short<- r_object[[2]]
+list_p_rules<- r_object[[3]]
+list_e_rules<- r_object[[4]]
+
+list_type_matrix<- r_object[[6]]
+list_epsilon_matrix<- r_object[[7]]
+list_terminals_matrix<- r_object[[8]]
+list_tree_matrix<- r_object[[9]]
+list_left_functions<- r_object[[10]]
+list_right_functions<- r_object[[11]]
+list_rows<- r_object[[12]]
+list_sides<- r_object[[13]]
+list_numbers<- r_object[[14]]
+description<- r_object[[15]]
+sentences<- r_object[[16]]
+list_permutations_vec<- r_object[[17]]
+
+list_grammars_all<- list()
+for(i in 1:M){
+  list_grammars_all[[i]]<- list(list_e_rules[[i]],list_p_rules[[i]], list_nonterminals_vec_short[[i]],list_nonterminals_vec_long[[i]],list_type_matrix[[i]],list_epsilon_matrix[[i]],list_terminals_matrix[[i]],list_permutations_vec[[i]]) 
 }
 
-##Random base production rule
 
-base_production_random<- function(nonterminal){
-  weight<- 1
-  permutation_weights<- rdirichlet(1,permutations_vec)
-  permutation<- sample(factorial(5),1,prob=permutation_weights)
-  if((permutation-1) %/% 24 == 0){
-    cut<- 1
-  }else if((permutation-1) %/% 24 ==1){
-    cut<- 2
-  }else if((permutation-1) %/% 24 == 2){
-    cut<- 3
-  }else if((permutation-1) %/% 24 == 3){
-    cut<- 4
-  }else if((permutation-1) %/% 24 == 4){
-    cut<- 5
-  }
-  if(permutation%%24 == 1){
-    sigma<- c(1,2,3,4)
-  }else if(permutation%%24 == 2){
-    sigma<- c(1,2,4,3)
-  }else if(permutation%%24 == 3){
-    sigma<- c(1,3,2,4)
-  }else if(permutation%%24 == 4){
-    sigma<- c(1,3,4,2)
-  }else if(permutation%%24 == 5){
-    sigma<- c(1,4,2,3)
-  }else if(permutation%%24 ==6){
-    sigma<- c(1,4,3,2)
-  }else if(permutation%%24 == 7){
-    sigma<- c(2,1,3,4)
-  }else if(permutation%%24 == 8){
-    sigma<- c(2,1,4,3)
-  }else if(permutation%%24 == 9){
-    sigma<- c(2,3,1,4)
-  }else if(permutation%%24 == 10){
-    sigma<- c(2,3,4,1) 
-  }else if(permutation%%24 == 11){
-    sigma<- c(2,4,1,3)
-  }else if(permutation%%24 == 12){
-    sigma<- c(2,4,3,1) 
-  }else if(permutation%%24 == 13){
-    sigma<- c(3,1,2,4)
-  }else if(permutation%%24 == 14){
-    sigma<- c(3,1,4,2)
-  }else if(permutation%%24 == 15){
-    sigma<- c(3,2,1,4)
-  }else if(permutation%%24 == 16){
-    sigma<- c(3,2,4,1)
-  }else if(permutation%%24 == 17){
-    sigma<- c(3,4,1,2)
-  }else if(permutation%%24 ==18){
-    sigma<- c(3,4,2,1)
-  }else if(permutation%%24 == 19){
-    sigma<- c(4,1,2,3)
-  }else if(permutation%%24 == 20){
-    sigma<- c(4,1,3,2)
-  }else if(permutation%%24 == 21){
-    sigma<- c(4,2,1,3)
-  }else if(permutation%%24 == 22){
-    sigma<- c(4,2,3,1) 
-  }else if(permutation%%24 == 23){
-    sigma<- c(4,3,1,2)
-  }else if(permutation%%24 == 0){
-    sigma<- c(4,3,2,1) 
-  }
-  
-  N<- 2
-  if(cut==1){
-    string1<- NA
-    string2<- sigma
-  }else if(cut==(2*N+1)){
-    string1<- sigma
-    string2<- NA
-  }else{
-    string1<- sigma[1:(cut-1)]
-    string2<- sigma[cut:(2*N)]
-  }
-  nonterminals_with_weights<- draw_nt(N)
-  nonterminals<- nonterminals_with_weights[[1]]
-  weight<- weight*nonterminals_with_weights[[2]]
-  
-  
-  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight,permutation)
-  return(r)
-}
+ug<- unique_ordered(list_grammars_all)
+ug_frequencies<- unique_frequencies(list_grammars_all)
 
-dp_random<- function(nonterminal,minimum,maximum){
-draws<- vector()
-stop<- FALSE
-p_rules_star<- list()
-e_rules_star<- list()
+grammar<- ug[[1]]
+e_rules<- grammar[[1]]
+p_rules<- grammar[[2]]
+nonterminals_vec_short<- grammar[[3]]
+nonterminals_vec_long<- grammar[[4]]
+type_matrix<- grammar[[5]]
+epsilon_matrix<- grammar[[6]]
+terminals_matrix<- grammar[[7]]
+permutations_vec<- grammar[[8]]
+e_rules_ordered<- unique_ordered(e_rules)
+e_rules_frequencies<- unique_frequencies(e_rules)
+####
+p_rule_frequencies<- vector(length = length(p_rules))
 for(i in 1:length(p_rules)){
-if(p_rules[[i]][[1]]==nonterminal){p_rules_star[[length(p_rules_star)+1]]<- p_rules[[i]]}
+  p_rule_frequencies[i]<- p_rules[[i]][[6]]
 }
+p_rule_mode<- p_rules[[which.max(p_rule_frequencies)]]
+####
 
-for(i in 1:length(e_rules)){
-if(e_rules[[i]][1]==nonterminal){e_rules_star[[length(e_rules_star)+1]]<- e_rules[[i]]}
-}
-
-if(length(p_rules_star) > 0){
-p_frequencies<- vector(length = length(p_rules_star))
-for(i in 1:length(p_rules_star)){
-p_frequencies[i]<- p_rules_star[[i]][[6]]
-}
-}else{
-p_frequencies <- 0
-}
-p_freq_total<- sum(p_frequencies)
-
-old_rule_total<- p_freq_total + length(e_rules_star)
-
-draw1<- sample(0:1,1,prob=c(alpha2,old_rule_total))
-draws<- c(draws,draw1)
-if(draw1==0){#new rule
-index1<- which(type_matrix[,1]==nonterminal)
-proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
-proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
-
-draw2<- sample(0:1,1,prob=c(1-proba_emission,proba_emission))
-draws<- c(draws,draw2)
-if(draw2==0){#new production
-if(maximum == 1){stop<- TRUE}
-rule<- base_production_random(nonterminal)
-}else{#new emission
-if(minimum > 2){stop<- TRUE}
-index2<- which(terminals_matrix[,1]==nonterminal)
-emission_parameters<- terminals_matrix[index2,2:ncol(terminals_matrix)]
-emission_probas<- rdirichlet(1,emission_parameters)
-draw3<- sample(0:2,1,prob = c(1 - proba_epsilon,proba_epsilon/2,proba_epsilon/2))
-draws<- c(draws,draw3)
-if(draw3 == 0){
-if(maximum == 1){stop<- TRUE}
-x<- sample(terminals,1,prob = emission_probas)
-y<- sample(terminals,1,prob = emission_probas)
-}else if(draw3 ==1){
-if(minimum ==2){stop<- TRUE}
-x<- sample(terminals,1,prob=emission_probas)
-y<- ""
-}else if(draw3 ==2){
-if(minimum == 2){stop<- TRUE}
-x<- ""
-y<- sample(terminals,1, prob=emission_probas)
-}
-rule<- c(nonterminal,x,y)
-}
-}else{#old rule
-draw2<- sample(0:1,1,prob=c(p_freq_total,length(e_rules_star)))
-draws<- c(draws,draw2)
-if(draw2 == 0){#old production
-if(maximum == 1){stop<- TRUE}
-samp<- sample(1:length(p_rules_star),1, prob = p_frequencies)
-rule<- p_rules_star[[samp]]
-}else{#old emission
-samp<- sample(1:length(e_rules_star),1)
-rule<- e_rules_star[[samp]]
-if(rule[2]=="" | rule[[3]]==""){
-if (minimum >1 ){stop<- TRUE}
-}else{
-if(minimum > 2){stop<- TRUE}
-}
-}
-}
-return(list(rule,stop,draws))
-}
-
-evaluate<- function(string1,x,numb){
-  w<- which(string1==numb)
-  s<- append(string1,x,after=w)
-  s<- s[-w]
-  return(s)
-}
-
-update<- function(min_or_max){
-  if(row !=1){
-  tm<- tree_matrix
-  l<- length(rows)
-  if(min_or_max == "min"){
-    for(i in 1:(l-1)){
-      par<- rows[l-i]
-      ch<- which(tm[,1] == par)
-      tm[par,5]<- max(tm[par,5], sum(tm[ch,5]))
-    }
-    for(node in 2:nrow(tm)){
-      par<- tm[node,1]
-      ch<- which(tm[,1]==par)
-      update<- tm[par,6] - sum(tm[ch,5]) + tm[node,5]
-      tm[node,6]<- min(tm[node,6], update)
-    }
-  }else if(min_or_max== "max"){
-    for(i in 1:(l-1)){
-      par<- rows[l-i]
-      ch<- which(tm[,1] == par)
-      tm[par,6]<- min(tm[par,6], sum(tm[ch,6]))
-    }
-    for(node in 2:nrow(tm)){
-      par<- tm[node,1]
-      ch<- which(tm[,1]==par)
-      update<- tm[par,5] - sum(tm[ch,6]) + tm[node,6]
-      tm[node,5]<- max(tm[node,5], update)
-    }
-  }
-  return(tm)
-  }else{return(tree_matrix)}
-}
-
-weight_e2<- function(nonterminal){
-  w<- 1
+Q<- 1000 #number of sentences to generate
+sim_sentences<- list()
+sentence_length<- vector(length=Q)
+edit_distance<- vector(length = Q)
+qq<- 0
+for(QQ in 1:Q){
   
-  nt_ind<- which(terminals_matrix[,1]==nonterminal)
-  if(x!=""){
-    x_ind<- which(terminals == x)
-    d1<- terminals_matrix[nt_ind,(x_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
-    w<- w*d1
-  }
-  if(y!=""){
-    y_ind<- which(terminals == y)
-    d2<- terminals_matrix[nt_ind,(y_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
-    w<- w*d2
+  #### construct a tree
+  
+  stop<- TRUE
+  while(stop == TRUE){
+    
+    stop<- FALSE
+    tree_matrix<- matrix(ncol=8)
+    colnames(tree_matrix)<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
+    tree_matrix[1,2]<- 1
+    tree_matrix[1, 5]<- 3
+    tree_matrix[1, 6]<- 20
+    tree_matrix[1, 7]<- 1
+    tree_matrix[1,8]<- 1
+    left_functions<- list()
+    right_functions<- list()
+    
+    row_vec<- tree_matrix[,3]
+    while(sum(is.na(row_vec))>0 & stop == FALSE){
+      row<- which(is.na(row_vec))[1]
+      rows<- row
+      row1<- row
+      while(is.na(tree_matrix[row1,1])==FALSE){
+        row1<- tree_matrix[row1,1]
+        rows<- c(row1,rows)
+      }
+      nonterminal<- tree_matrix[row,7]
+      minimum<- tree_matrix[row,5]
+      maximum<- tree_matrix[row,6]
+      
+      if(length(which(type_matrix[,1] == nonterminal))==0){
+        type_matrix<- rbind(type_matrix,c(nonterminal,b1,b2))
+        epsilon_matrix<- rbind(epsilon_matrix,c(nonterminal,c1,c2))
+      }
+      if(length(which(terminals_matrix[,1] == nonterminal))==0){
+        terminals_matrix<- rbind(terminals_matrix,c(nonterminal,rep(1,length(terminals))))
+      }
+      
+      rule_all<- dp_random(nonterminal, minimum, maximum)
+      rule<- rule_all[[1]]
+      stop<- rule_all[[2]]
+      draws<- rule_all[[3]]
+      
+      if(draws[2]==0){#production
+        tree_matrix[row, 3]<- 2
+        left_functions[[row]]<- as.list(rule[[3]])
+        right_functions[[row]]<- as.list(rule[[4]])
+        nc <- 2 #number of children
+        nr <- nrow(tree_matrix) #number of rows
+        for(cc in 1:nc){
+          tree_matrix <-rbind(tree_matrix, c(row, nr + cc, rep(NA, 2), 1, maximum - nc + 1, rule[[2]][cc],nr+nc))
+          left_functions[[nr + cc]] <- list()
+          right_functions[[nr + cc]] <- list()
+        }
+        minimum<- max(tree_matrix[row,5],nc)
+        tree_matrix[row,5]<- minimum
+        tree_matrix<- update("min")
+      }else if(draws[2]==1){#emission
+        
+        tree_matrix[row, 3]<- 0
+        left_functions[[row]]<- rule[2]
+        right_functions[[row]]<- rule[3]
+        if(rule[2]==""|rule[3]==""){
+          maximum<- 1
+          tree_matrix[row,6]<- maximum
+          tree_matrix<- update("max")
+        }else{
+          maximum<- 2
+          tree_matrix[row,6]<- maximum
+          tree_matrix<- update("max")
+          minimum<- 2
+          tree_matrix[row,5]<- minimum
+          tree_matrix<- update("min")
+        }
+      }
+      
+      row_vec<- tree_matrix[,3]
+    }
   }
   
-  freq<- 0
-  if(side=="left"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==x & e_rules[[i]][[3]]==y){
-        freq<- freq+1
+  ###evaluate the tree
+  
+  row<- 1
+  side<- "left"
+  number<- 1
+  rows<- row
+  sides<- side
+  numbers<- number
+  string<- left_functions[[row]]
+  
+  count<- 0
+  if(length(left_functions[[1]])>0){
+    for(j in 1:length(left_functions[[1]])){
+      count<- count+ is.numeric(left_functions[[1]][[j]])}
+  }
+  if(length(right_functions[[1]])>0){
+    for(j in 1:length(right_functions[[1]])){
+      count<- count+ is.numeric(right_functions[[1]][[j]])}
+  }
+  
+  
+  while(count > 0){
+    
+    if(tree_matrix[row,3]==2){
+      
+      if(side=="left"){
+        string<- left_functions[[row]]
+      }else if(side=="right"){
+        string<- right_functions[[row]]
+      }
+      vec<- vector(length=length(string))
+      for(k in 1:length(vec)){vec[k]<- is.numeric(string[[k]])}
+      
+      if(row==1 & side == "left" & sum(vec) == 0 ){
+        sides<- "right"
+        side<- "right"
+      }else{
+        
+        if(sum(vec)==0){
+          if(length(string)==1){
+            if(is.na(string)==TRUE){
+              x<- ""
+            }else{x<- string}
+          }else{
+            x<- paste(string,collapse="")
+          }
+          if(side=="left"){
+            left_functions[[row]]<- x
+          }else if(side=="right"){
+            right_functions[[row]]<- x
+          }
+          row <- rows[(length(rows) - 1)]
+          side <- sides[(length(sides) - 1)]
+          numb<- number
+          number<- numbers[(length(numbers)-1)]
+          rows <- rows[1:(length(rows) - 1)]
+          sides <- sides[1:(length(sides) - 1)]
+          numbers<- numbers[1:(length(numbers)-1)]
+          if (side == "left") {
+            string1 <- left_functions[[row]]
+            left_functions[[row]] <- evaluate(string1, x, numb)
+          } else if (side == "right") {
+            string1 <- right_functions[[row]]
+            right_functions[[row]] <- evaluate(string1, x, numb)
+          }
+          
+        }else{
+          
+          ii<- 1
+          while(is.numeric(string[[ii]])==FALSE){ii<- ii+1}
+          
+          number <- string[[ii]]
+          if (ceiling(number / 2) == number / 2) {
+            side <- "right"
+          } else if (ceiling(number / 2) != number / 2) {
+            side <- "left"
+          }
+          row <- tree_matrix[row,8] + ceiling(number / 2)
+          sides <- c(sides, side)
+          rows <- c(rows, row)
+          numbers<- c(numbers, number)
+          
+          
+          
+        }
+      }
+    }else if(tree_matrix[row,3]==0){
+      
+      if(side == "left"){
+        x<- left_functions[[row]]
+      }else{
+        x<- right_functions[[row]]
+      }
+      
+      if(length(rows)!=1){
+        row <- rows[(length(rows) - 1)]
+        side <- sides[(length(sides) - 1)]
+        numb<- number
+        number<- numbers[(length(numbers) -1)]
+        rows <- rows[1:(length(rows) - 1)]
+        sides <- sides[1:(length(sides) - 1)]
+        numbers<- numbers[1:(length(numbers) -1)]
+        
+        if (side == "left") {
+          string1 <- left_functions[[row]]
+          left_functions[[row]] <- evaluate(string1,x,numb)
+        } else if (side == "right") {
+          string1 <- right_functions[[row]]
+          right_functions[[row]] <- evaluate(string1, x, numb)
+        }
       }
     }
-  }else if(side=="right"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==y & e_rules[[i]][[3]]==x){
-        freq<- freq+1
-      }
+    
+    count1<- 0
+    if(length(left_functions[[1]])>0){
+      for(j in 1:length(left_functions[[1]])){
+        count1<- count1+ is.numeric(left_functions[[1]][[j]])}
     }
-  }
-  ind_emission<- which(type_matrix[,1]==nonterminal)
-  ind_epsilon<- which(epsilon_matrix[,1]== nonterminal)
-  proba_epsilon_expected<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
-  proba_emission_expected<- type_matrix[ind_emission,2]/(type_matrix[ind_emission,2]+ type_matrix[ind_emission,3])
-  if(x!="" & y!= ""){
-    w<- w + freq/(proba_emission_expected*(1-proba_epsilon_expected))
-  }else{
-    w<- w + freq/(proba_emission_expected*proba_epsilon_expected/2)
+    if(length(right_functions[[1]])>0){
+      for(j in 1:length(right_functions[[1]])){
+        count1<- count1+ is.numeric(right_functions[[1]][[j]])}
+    }
+    count<- count1
   }
   
-  return(w)
+  simulated_sentence<- vector(length = 0)
+  
+  for(i in 1:length(left_functions[[1]])){
+    words<- left_functions[[1]][[i]]
+    words_sep<- s2c(words)
+    simulated_sentence<- c(simulated_sentence,words_sep)
+  }
+  for(i in 1:length(right_functions[[1]])){
+    words<- right_functions[[1]][[i]]
+    words_sep<- s2c(words)
+    simulated_sentence<- c(simulated_sentence,words_sep)
+  }
+  simulated_sentence
+  if(length(which(simulated_sentence == ""))>0){
+    simulated_sentence<- simulated_sentence[-(which(simulated_sentence == ""))]
+  }
+  if(length(which(is.na(simulated_sentence)))>0){
+    simulated_sentence<- simulated_sentence[-(which(is.na(simulated_sentence)))]
+  }
+  
+  if(g=="copy"){
+    cut<- round(length(simulated_sentence)/2)
+    s1<- simulated_sentence[1:cut]
+    s2<- simulated_sentence[(cut+1):length(simulated_sentence)]
+    s1<- paste0(s1,collapse = "")
+    s2<- paste0(s2,collapse = "")
+    edit_distance[QQ]<- adist(s1,s2)
+  }else if(g=="doubles"){
+    s1<- simulated_sentence[seq(1,length(simulated_sentence),2)]
+    s2<- simulated_sentence[seq(2,length(simulated_sentence),2)]
+    z = rle(rle(simulated_sentence)$lengths %% 2)
+    edit_distance[[QQ]]<- sum(ceiling(z$lengths[z$values == 1] / 2))
+  }
+  s1<- paste0(s1,collapse = "")
+  s2<- paste0(s2,collapse = "")
+  sentence_length[QQ]<- length(simulated_sentence)
+  sim_sentences[[length(sim_sentences)+1]]<- simulated_sentence
+  if(s1 == s2){qq<- qq+1}
 }
+print(description)
+print("proportion of correct estimates:")
+print(qq/Q)
 
+r_object2<-list()
+r_object2[[1]]<- description
+r_object2[[2]]<- qq/Q
+r_object2[[3]]<- edit_distance
+r_object2[[4]]<- sentence_length
+r_object2[[5]]<- ug
+r_object2[[6]]<- ug_frequencies
+r_object2[[7]]<- p_rules
+r_object2[[8]]<- p_rule_frequencies
+r_object2[[9]]<- unique_ordered(e_rules)
+r_object2[[10]]<- unique_frequencies(e_rules)
+r_object2[[11]]<- sim_sentences
+r_object2[[12]]<- nonterminals_vec_long
 
-unique_ordered <- function(x) {
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  index_ux<-order(tab,decreasing=TRUE)
-  ux_ordered<- ux[index_ux]
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(ux_ordered)
-}
-
-unique_frequencies<- function(x){
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(frequencies)
-}
-
-
+filename<- paste0(Sys.Date(),"_",description,"_analysis")
+save(r_object2,file=filename)
+#(edit_distance,breaks= max(edit_distance)+1, main = "", xlab= "Edit distance", freq=FALSE)
+#hist(sentence_length,breaks=max(sentence_length)+1, main = "", xlab = "Sentence length",freq = FALSE)
+#hist(edit_distance/sentence_length,main="", xlab = "(edit distance)/length", freq=FALSE)
