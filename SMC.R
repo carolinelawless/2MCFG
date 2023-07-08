@@ -9,7 +9,7 @@ M<- 50000
 number_sentences<- 100
 alpha1 <- 500 #scaling parameter for DP over nonterminals
 alpha2 <- 500 #scaling parameter for DP over rules
-b1<- 1 #Beta parameters for type = emission
+b1<- 1000 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
