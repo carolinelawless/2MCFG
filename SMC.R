@@ -4,8 +4,8 @@ library(tictoc)
 
 tic()
 
-g<- "doubles"
-M<- 50000
+g<- "copy"
+M<- 1000
 number_sentences<- 100
 alpha1 <- 50 #scaling parameter for DP over nonterminals
 alpha2 <- 50 #scaling parameter for DP over rules
@@ -13,7 +13,8 @@ b1<- 1000 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_b1=",b1)
+
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1)
 filename<- paste0(Sys.Date(),"_",description)
 
 terminals<- c("a","b","c")
@@ -71,23 +72,16 @@ sent= paste(sentence,collapse="")
 
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-a1<- 1 #Gamma parameters for poisson
-a2<- 1
-permutation_parameters<- rep(1,factorial(5))
-if(g == "copy"){
-  permutation_parameters[51]<- 119
-}else if(g == "doubles"){
-  permutation_parameters[49]<- 119
-}
+
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
 list_p_rules<- list()
 list_e_rules<- list()
-list_gamma_matrix<- list()
 list_type_matrix<- list()
 list_epsilon_matrix<- list()
 list_terminals_matrix<- list()
+list_permutations_vec<- list()
 list_tree_matrix<- list()
 list_left_functions<- list()
 list_right_functions<- list()
@@ -103,20 +97,24 @@ for(i in 1:M){
   list_nonterminals_vec_short[[i]]<- vector()
   list_p_rules[[i]]<- list()
   list_e_rules[[i]]<- list()
-  list_gamma_matrix[[i]]<- matrix(c(1,a1,a2),nrow=1,ncol=3)
   list_type_matrix[[i]]<- matrix(c(1,b1,b2),nrow=1,ncol=3)
   list_epsilon_matrix[[i]]<- matrix(c(1,c1,c2),nrow=1,ncol=3)
   list_terminals_matrix[[i]]<- matrix(1,nrow=1,ncol=length(terminals)+1)
+  list_permutations_vec[[i]]<- rep(1,factorial(5))
+  if(g == "copy"){
+    list_permutations_vec[[i]][51]<- 119
+  }else if(g == "doubles"){
+    list_permutations_vec[[i]][49]<- 119
+  }
 }
-
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
 list_nonterminals_vec_short1<- list_nonterminals_vec_short
 list_p_rules1<- list_p_rules
 list_e_rules1<- list_e_rules
-list_gamma_matrix1<- list_gamma_matrix
 list_type_matrix1<- list_type_matrix
 list_epsilon_matrix1<- list_epsilon_matrix
 list_terminals_matrix1<- list_terminals_matrix
+list_permutations_vec1<- list_permutations_vec
 
 weights<- rep(1,M)
 
@@ -145,7 +143,7 @@ for(ss in 1:length(sentences)){
   list_rows1<- list_rows
   list_sides1<- list_sides
   list_numbers1<- list_numbers
-  
+   
   for(ttt in 1:length(sentence)){
     #print(ttt)
     for(i in 1:M){
@@ -154,10 +152,10 @@ for(ss in 1:length(sentences)){
       nonterminals_vec_short<- list_nonterminals_vec_short[[i]]
       p_rules<- list_p_rules[[i]]
       e_rules<- list_e_rules[[i]]
-      gamma_matrix<- list_gamma_matrix[[i]]
       type_matrix<- list_type_matrix[[i]]
       epsilon_matrix<- list_epsilon_matrix[[i]]
       terminals_matrix<- list_terminals_matrix[[i]]
+      permutations_vec<- list_permutations_vec[[i]]
       tree_matrix<- list_tree_matrix[[i]]
       left_functions<- list_left_functions[[i]]
       right_functions<- list_right_functions[[i]]
@@ -177,8 +175,7 @@ for(ss in 1:length(sentences)){
           maximum<- tree_matrix[row, 6] #maximal number of terminal symbols associated with current nonterminal
           nonterminal<- tree_matrix[row, 7] #current nonterminal symbol
           
-          if(length(which(gamma_matrix[,1] == nonterminal))==0){
-            gamma_matrix<- rbind(gamma_matrix,c(nonterminal,a1,a2))
+          if(length(which(type_matrix[,1] == nonterminal))==0){
             type_matrix<- rbind(type_matrix,c(nonterminal,b1,b2))
             epsilon_matrix<- rbind(epsilon_matrix,c(nonterminal,c1,c2))
           }
@@ -191,19 +188,19 @@ for(ss in 1:length(sentences)){
           p_rules<- new_rule[[4]]
           permutation<- new_rule[[5]]
           if(permutation>0){
-            permutation_parameters[permutation]<- permutation_parameters[permutation]+1
+            permutations_vec[permutation]<- permutations_vec[permutation]+1
           }
           tree_matrix[row,4]<- type
           w<- w*ww
           
           index<- which(type_matrix[,1]==nonterminal)
-          if(type == 0|type==1){
+          if(type == 0|type==1){#production rule
             type_matrix[index,3]<- type_matrix[index,3]+1
-          }else if(type==2|type==3){
+          }else if(type==2|type==3){#emission rule
             type_matrix[index,2]<- type_matrix[index,2]+1
-            if(type==2 & rule!=""){
+            if(type==2 & rule!=""){#no epsilon
               epsilon_matrix[index,3]<- epsilon_matrix[index,3]+1
-            }else{
+            }else{#epsilon
               epsilon_matrix[index,2]<- epsilon_matrix[index,2]+1
             }
           }
@@ -211,9 +208,7 @@ for(ss in 1:length(sentences)){
           
           if (type == 0 | type ==1){#production rule
             
-            index<- which(gamma_matrix[,1]==nonterminal)
-            gamma_matrix[index,2]<- gamma_matrix[index,2]+rule[[5]]
-            gamma_matrix[index,3]<- gamma_matrix[index,3]+1
+
             
             left_functions[[row]] <- as.list(rule[[3]])
             right_functions[[row]] <- as.list(rule[[4]])
@@ -427,10 +422,10 @@ for(ss in 1:length(sentences)){
       list_nonterminals_vec_short[[i]]<- nonterminals_vec_short
       list_p_rules[[i]]<- p_rules
       list_e_rules[[i]]<- e_rules
-      list_gamma_matrix[[i]]<- gamma_matrix
       list_type_matrix[[i]]<- type_matrix
       list_epsilon_matrix[[i]]<- epsilon_matrix
       list_terminals_matrix[[i]]<- terminals_matrix
+      list_permutations_vec[[i]]<- permutations_vec
       list_tree_matrix[[i]]<- tree_matrix
       list_left_functions[[i]]<- left_functions
       list_right_functions[[i]]<- right_functions
@@ -451,10 +446,10 @@ for(ss in 1:length(sentences)){
       list_nonterminals_vec_short1[[i]]<- list_nonterminals_vec_short[[j]]
       list_p_rules1[[i]]<- list_p_rules[[j]]
       list_e_rules1[[i]]<- list_e_rules[[j]]
-      list_gamma_matrix1[[i]]<- list_gamma_matrix[[j]]
       list_type_matrix1[[i]]<- list_type_matrix[[j]]
       list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
       list_terminals_matrix1[[i]]<- list_terminals_matrix[[j]]
+      list_permutations_vec1[[i]]<- list_permutations_vec[[j]]
       list_tree_matrix1[[i]]<- list_tree_matrix[[j]]
       list_left_functions1[[i]]<- list_left_functions[[j]]
       list_right_functions1[[i]]<- list_right_functions[[j]]
@@ -467,10 +462,10 @@ for(ss in 1:length(sentences)){
       list_nonterminals_vec_short[[i]]<- list_nonterminals_vec_short1[[i]]
       list_p_rules[[i]]<- list_p_rules1[[i]]
       list_e_rules[[i]]<- list_e_rules1[[i]]
-      list_gamma_matrix[[i]]<- list_gamma_matrix1[[i]]
       list_type_matrix[[i]]<- list_type_matrix1[[i]]
       list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
       list_terminals_matrix[[i]]<- list_terminals_matrix1[[i]]
+      list_permutations_vec[[i]]<- list_permutations_vec1[[i]]
       list_tree_matrix[[i]]<- list_tree_matrix1[[i]]
       list_left_functions[[i]]<- list_left_functions1[[i]]
       list_right_functions[[i]]<- list_right_functions1[[i]]
@@ -491,10 +486,10 @@ for(ss in 1:length(sentences)){
     nonterminals_vec_short<- list_nonterminals_vec_short[[i]]
     p_rules<- list_p_rules[[i]]
     e_rules<- list_e_rules[[i]]
-    gamma_matrix<- list_gamma_matrix[[i]]
     type_matrix<- list_type_matrix[[i]]
     epsilon_matrix<- list_epsilon_matrix[[i]]
     terminals_matrix<- list_terminals_matrix[[i]]
+    permutations_vec<- list_permutations_vec[[i]]
     tree_matrix<- list_tree_matrix[[i]]
     left_functions<- list_left_functions[[i]]
     right_functions<- list_right_functions[[i]]
@@ -657,10 +652,10 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_short[[i]]<- nonterminals_vec_short
     list_p_rules[[i]]<- p_rules
     list_e_rules[[i]]<- e_rules
-    list_gamma_matrix[[i]]<- gamma_matrix
     list_type_matrix[[i]]<- type_matrix
     list_epsilon_matrix[[i]]<- epsilon_matrix
     list_terminals_matrix[[i]]<- terminals_matrix
+    list_permutations_vec[[i]]<- permutations_vec
     list_tree_matrix[[i]]<- tree_matrix
     list_left_functions[[i]]<- left_functions
     list_right_functions[[i]]<- right_functions
@@ -678,10 +673,10 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_short1[[i]]<- list_nonterminals_vec_short[[j]]
     list_p_rules1[[i]]<- list_p_rules[[j]]
     list_e_rules1[[i]]<- list_e_rules[[j]]
-    list_gamma_matrix1[[i]]<- list_gamma_matrix[[j]]
     list_type_matrix1[[i]]<- list_type_matrix[[j]]
     list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
     list_terminals_matrix1[[i]]<- list_terminals_matrix[[j]]
+    list_permutations_vec1[[i]]<- list_permutations_vec[[j]]
     list_tree_matrix1[[i]]<- list_tree_matrix[[j]]
     list_left_functions1[[i]]<- list_left_functions[[j]]
     list_right_functions1[[i]]<- list_right_functions[[j]]
@@ -694,10 +689,10 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_short[[i]]<- list_nonterminals_vec_short1[[i]]
     list_p_rules[[i]]<- list_p_rules1[[i]]
     list_e_rules[[i]]<- list_e_rules1[[i]]
-    list_gamma_matrix[[i]]<- list_gamma_matrix1[[i]]
     list_type_matrix[[i]]<- list_type_matrix1[[i]]
     list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
     list_terminals_matrix[[i]]<- list_terminals_matrix1[[i]]
+    list_permutations_vec[[i]]<- list_permutations_vec1[[i]]
     list_tree_matrix[[i]]<- list_tree_matrix1[[i]]
     list_left_functions[[i]]<- list_left_functions1[[i]]
     list_right_functions[[i]]<- list_right_functions1[[i]]
@@ -785,7 +780,7 @@ r_object[[1]]<- list_nonterminals_vec_long
 r_object[[2]]<- list_nonterminals_vec_short
 r_object[[3]]<- list_p_rules
 r_object[[4]]<- list_e_rules
-r_object[[5]]<- list_gamma_matrix
+r_object[[5]]<- NA
 r_object[[6]]<- list_type_matrix
 r_object[[7]]<- list_epsilon_matrix
 r_object[[8]]<- list_terminals_matrix
@@ -797,6 +792,6 @@ r_object[[13]]<- list_sides
 r_object[[14]]<- list_numbers
 r_object[[15]]<- description
 r_object[[16]]<- sentences
-r_object[[17]]<- permutation_parameters
+r_object[[17]]<- list_permutations_vec
 
 save(r_object,file=filename)
