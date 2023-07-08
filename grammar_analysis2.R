@@ -5,15 +5,15 @@ library(LaplacesDemon)
 
 date<- "2023-07-08"
 g<- "doubles"
-M<- 10000
+M<- 1000
 S<- 100
-alpha1<-alpha2<- 50
-b1<- 1000 #Beta parameters for type = emission
+alpha1<-alpha2<- 500
+b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 #name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_b1=",b1)
-name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha2)
+name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha2,"_b1=",b1,"_function_modif")
 load(name)
 
 terminals<- c("a","b","c")
