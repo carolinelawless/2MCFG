@@ -24,9 +24,9 @@ draw_nt<- function(n){
 }
 
 ##Random base production rule
-base_production_random<- function(nonterminal,gamma1){
+base_production_random<- function(nonterminal){
   weight<- 1
-  permutation_weights<- rdirichlet(1,permutation_parameters)
+  permutation_weights<- rdirichlet(1,permutations_vec)
   permutation<- sample(factorial(5),1,prob=permutation_weights)
   if((permutation-1) %/% 24 == 0){
     cut<- 1
@@ -110,58 +110,51 @@ base_production_random<- function(nonterminal,gamma1){
 }
 
 kernel_parameters_function<- function(nonterminal,minimum,maximum){
-  index1<- which(gamma_matrix[,1]==nonterminal)
-  gamma1<- rgamma(1,gamma_matrix[index1,2],gamma_matrix[index1,3])
+  index1<- which(type_matrix[,1]==nonterminal)
   proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
   proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
   p_rules_star<- list()
-  q_star<- 0
-  qq<- 0
-  rule_probas<- vector()
   rule_probas_star<- vector()
+  q_star<- 0
+  q<- 0
   rule_indices_star<- vector()
   if(maximum>1){#this means production rules possible
-    index2 = which(nonterminals_vec_short == nonterminal)
-
+    index2 = which(nonterminals_vec_short == nonterminal) #rule_indices_star
+    rule_indices_star<- index2
     if(length(index2)>0){
-
       for(i in 1:length(index2)){
         j<- index2[i]
-        rule_probas[length(rule_probas)+1]<- p_rules[[j]][[6]]
-        if(p_rules[[j]][5] <= maximum){
-        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]]
+        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]] 
         rule_probas_star[length(rule_probas_star)+1]<- p_rules[[j]][[6]]
-        rule_indices_star[length(rule_indices_star)+1]<-j
-        }
-        
       }
     }
-    qq<- sum(rule_probas)
     q_star<- sum(rule_probas_star)
-    s<- sum(dpois(2:maximum - 2,gamma1))
+    q<- q_star
+    if(length(e_rules)>0){
+      for(i in 1:length(e_rules)){
+        e_rule<- e_rules[[i]]
+        if(e_rule[1]== nonterminal){q<- q+1}
+      }
+    }
   }
   if(minimum == 1 & maximum > 1){
-    proba_emission_star<- proba_emission/(s*(1-proba_emission) + proba_emission)
-    proba_production_star<- 1 - proba_emission_star
-    alpha_star<- alpha2*(s*(1-proba_emission) + proba_emission)
+    proba_emission_star<- proba_emission
+    alpha_star<- alpha2
   }
   if(minimum == 2){
-    proba_emission_star<- (1-proba_epsilon)*proba_emission/(s*(1-proba_emission)+(1-proba_epsilon)*proba_emission)
-    proba_production_star<- 1 - proba_emission_star
-    alpha_star<- alpha2*(s*(1-proba_emission) + (1-proba_epsilon)*proba_emission)
+    proba_emission_star<- (1-proba_epsilon)*proba_emission/(1-proba_emission+(1-proba_epsilon)*proba_emission)
+    alpha_star<- alpha2*(1-proba_emission + (1-proba_epsilon)*proba_emission)
   }
   if(minimum > 2){
     proba_emission_star<- 0
-    proba_production_star<- 1
-    alpha_star<- alpha2*s*(1-proba_emission)
+    alpha_star<- alpha2*(1-proba_emission)
   }
   if(maximum == 1){
     proba_emission_star<- 1
-    proba_production_star<- 0
     alpha_star<- alpha2*proba_emission*proba_epsilon
   }
-  parameter_list<- list(proba_emission_star,proba_production_star,alpha_star,p_rules_star,q_star,qq,gamma1,proba_emission,proba_epsilon,rule_probas_star,rule_probas,rule_indices_star)
-    return(parameter_list)
+  parameter_list<- list(alpha_star,proba_emission_star,proba_epsilon,p_rules_star,q_star,rule_probas_star,q,rule_indices_star)
+  return(parameter_list)
 }
 
 dp_random<- function(nonterminal,minimum,maximum){
@@ -169,34 +162,26 @@ dp_random<- function(nonterminal,minimum,maximum){
   p_rules1<- p_rules
   weight<- 1
   kernel_params<- kernel_parameters_function(nonterminal,minimum,maximum)
-  proba_emission_star<- kernel_params[[1]]
-  proba_production_star<- kernel_params[[2]]
-  alpha_star<- kernel_params[[3]]
+  alpha_star<- kernel_params[[1]]
+  proba_emission_star<- kernel_params[[2]]
+  proba_production_star<- 1 - proba_emission_star
+  proba_epsilon<- kernel_params[[3]]
   p_rules_star<- kernel_params[[4]]
   q_star<- kernel_params[[5]]
-  qq<- as.numeric(kernel_params[[6]])
-  gamma1<- as.numeric(kernel_params[[7]])
-  proba_emission<- as.numeric(kernel_params[[8]])
-  proba_epsilon<- as.numeric(kernel_params[[9]])
-  rule_probas_star<- kernel_params[[10]]
-  rule_probas<- kernel_params[[11]]
-  rule_indices_star<- kernel_params[[12]]
+  rule_probas_star<- kernel_params[[6]]
+  q<- kernel_params[[7]]
+  rule_indices_star<- kernel_params[[8]]
+  
   draw1<- sample(0:1,1,prob=c(alpha_star,q_star))
   if(draw1==0){#new rule
     draw2<- sample(0:1,1,prob=c(proba_production_star,proba_emission_star))
     if(draw2==0){#new production rule
-      nn <- maximum + 1
-      while (nn > maximum) {
-        rr <- base_production_random(nonterminal,gamma1)
-        nn <- rr[[5]]
-        #rr[[6]]<- "new"
-        
-      }
+      rr <- base_production_random(nonterminal)
       rr[[6]]<- 1 #frequency
-      permutation<- rr[[8]]
-      weight<- weight*rr[[7]]
       rule<- rr
       type<- 0
+      weight<- weight*rr[[7]]
+      permutation<- rr[[8]]
     }else if(draw2==1){#new (partial) emission rule
       if(minimum==1 & maximum >1){
         draw3<- sample(0:2,1,prob=c(1-proba_epsilon,proba_epsilon/2,proba_epsilon/2))
@@ -232,21 +217,16 @@ dp_random<- function(nonterminal,minimum,maximum){
       rule<- x
     }
   }else if(draw1==1){#old (production) rule
-    #samp<- sample(1:q_star,1)
     samp<- sample(1:length(p_rules_star),1, prob=(rule_probas_star+C_rules))
-    
     rule<- p_rules_star[[samp]]
     rule_ind<- rule_indices_star[samp]
-   
-    #rule[[6]]<- "old"
     freq<- rule[[6]]
     rule[[6]]<- rule[[6]] + 1
     p_rules1[[rule_ind]]<- rule
     type<- 1
     weight<- freq/(sum(rule_probas_star))/((freq+C_rules)/sum(rule_probas_star+C_rules))
   }
-  weight<- weight*(alpha_star + q_star)/(alpha2 + qq)
-  #params<- c(gamma1,proba_emission,proba_epsilon)
+  weight<- weight*(alpha_star + q_star)/(alpha2 + q)
   output<- list(rule,type,weight,p_rules1,permutation)
   return(output)
 }
