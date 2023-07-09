@@ -4,6 +4,7 @@ draw_nt<- function(n){
   w<- 1
   nt<- vector(length=n)
   ntv<-nonterminals_vec_long
+  
   for(i in 1:n){
     if(length(ntv)==0){
       nt[i]<- 1
