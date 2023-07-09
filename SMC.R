@@ -1,79 +1,5 @@
-remove(list=ls())
-source("functions.R")
-library(tictoc)
-
-tic()
-
-g<- "doubles"
-M<- 10000
-number_sentences<- 100
-alpha1 <- 500 #scaling parameter for DP over nonterminals
-alpha2 <- 500 #scaling parameter for DP over rules
-b1<- 1 #Beta parameters for type = emission
-b2<- 1
-c1<- 1 #Beta parameters for epsilon
-c2<- 1000
-
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=alpha2=",alpha1,"_b1=",b1,"_function_modif")
-print(description)
-filename<- paste0(Sys.Date(),"_",description)
-
-terminals<- c("a","b","c")
-number_sentences1<- round(number_sentences/6)
-number_sentences2<- round(number_sentences/6)
-number_sentences3<- round(number_sentences/6)
-number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
-#number_sentences1 <- number_sentences2 <- number_sentences3 <- 0
-#number_sentences4<- number_sentences
-len1<- 4
-len2<- 6
-len3<- 8
-len4<- 10
-
-sentences<- list()
-
-for(i in 1:number_sentences1){
-  sent_short<- sample(terminals,len1/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
-for(i in 1:number_sentences2){
-  sent_short<- sample(terminals,len2/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
-for(i in 1:number_sentences3){
-  sent_short<- sample(terminals,len3/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
-for(i in 1:number_sentences4){
-  sent_short<- sample(terminals,len4/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
-sentence<- sentences[[1]]
-sent= paste(sentence,collapse="")
-
 C_rules<- 0 #factor to add to each of the observed rules
 C_nonterminals<- 0 #factor to add to each of the observed nonterminals
-
 
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
@@ -144,7 +70,7 @@ for(ss in 1:length(sentences)){
   list_rows1<- list_rows
   list_sides1<- list_sides
   list_numbers1<- list_numbers
-   
+  
   for(ttt in 1:length(sentence)){
     #print(ttt)
     for(i in 1:M){
@@ -185,14 +111,15 @@ for(ss in 1:length(sentences)){
           
           rule<- new_rule[[1]]
           type<- new_rule[[2]]
-          ww<- new_rule[[3]]
+          weight<- new_rule[[3]]
           p_rules<- new_rule[[4]]
           permutation<- new_rule[[5]]
           if(permutation>0){
             permutations_vec[permutation]<- permutations_vec[permutation]+1
           }
           tree_matrix[row,4]<- type
-          w<- w*ww
+          tree_matrix[row,3]<- new_rule[[6]]
+          w<- w*weight
           
           index<- which(type_matrix[,1]==nonterminal)
           if(type == 0|type==1){#production rule
@@ -209,7 +136,7 @@ for(ss in 1:length(sentences)){
           
           if (type == 0 | type ==1){#production rule
             
-
+            
             
             left_functions[[row]] <- as.list(rule[[3]])
             right_functions[[row]] <- as.list(rule[[4]])
@@ -220,7 +147,7 @@ for(ss in 1:length(sentences)){
             
             nonterminals_vec_long<- c(nonterminals_vec_long,rule[[2]])
             
-            tree_matrix[row, 3] <- rule[[5]]
+
             nc <- rule[[5]] #number of children
             nr <- nrow(tree_matrix) #number of rows
             if (nc == 1) {
@@ -239,7 +166,7 @@ for(ss in 1:length(sentences)){
             }
           }else if(type == 2 | type== 3){#emission rule
             
-            tree_matrix[row,3]<- 0
+
             x<- rule
             
             if(type == 2 & x != ""){
@@ -266,6 +193,7 @@ for(ss in 1:length(sentences)){
             if(x==sentence[tt]){
               tt<- tt+1
             }
+            
             
             if(length(rows)>1){
               row <- rows[(length(rows) - 1)]
@@ -479,8 +407,6 @@ for(ss in 1:length(sentences)){
     
     
   }#ttt in 1:length(sentence)
-  
-  
   
   for(i in 1:M){
     nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
@@ -705,94 +631,3 @@ for(ss in 1:length(sentences)){
   
 }##ss 1:length(sentences)
 
-list_grammars_all<- list()
-for(i in 1:M){
-  list_grammars_all[[length(list_grammars_all)+1]]<- list(list_tree_matrix[[i]],list_left_functions[[i]], list_right_functions[[i]],list_e_rules[[i]],list_p_rules[[i]]) 
-}
-names(list_grammars_all)<- c("tree","left","right","emissions","productions")
-
-unique_grammars_ordered <- function(x) {
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  index_ux<-order(tab,decreasing=TRUE)
-  ux_ordered<- ux[index_ux]
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(ux_ordered)
-}
-
-unique_grammars_frequencies<- function(x){
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(frequencies)
-}
-
-ug<- unique_ordered(list_grammars_all)
-ug_frequencies<- unique_frequencies(list_grammars_all)
-print(paste0("number of grammars: ",length(ug_frequencies)))
-
-
-if(length(ug_frequencies) >=10){
-  print("First 10 frequencies:")
-  print(ug_frequencies[1:10])
-}
-mode1<- ug[[1]]
-
-print("Mode tree")
-print(mode1[[1]])
-
-print("Mode1 emission rules:")
-if(length(mode1[[4]])>=20){
-  for(i in 1:20)
-    print(mode1[[4]][[i]])
-}else{
-  print(mode1[[4]])
-}
-
-print("Mode1 production rules:")
-if(length(mode1[[5]])>=3){
-  print(mode1[[5]][[1]])
-  print(mode1[[5]][[2]])
-  print(mode1[[5]][[3]])
-}else{
-  print(mode1[[5]])
-}
-
-count<- 0
-count2<- 0
-for(i in 1:length(mode1[[4]])){
-  e_rule<- mode1[[4]][[i]]
-  if(e_rule[[2]] == e_rule[[3]]){
-    count<- count + 1
-  }
-  if(e_rule[[2]]!=""& e_rule[[3]]!=""){
-    count2<- count2 + 1
-  }
-}
-prop_pairs<- count/count2
-print(paste0("Mode1 proportion of double emissions=",prop_pairs))
-
-toc()
-print(description)
-
-r_object <- list()
-
-r_object[[1]]<- list_nonterminals_vec_long
-r_object[[2]]<- list_nonterminals_vec_short
-r_object[[3]]<- list_p_rules
-r_object[[4]]<- list_e_rules
-r_object[[5]]<- NA
-r_object[[6]]<- list_type_matrix
-r_object[[7]]<- list_epsilon_matrix
-r_object[[8]]<- list_terminals_matrix
-r_object[[9]]<- list_tree_matrix
-r_object[[10]]<- list_left_functions
-r_object[[11]]<- list_right_functions
-r_object[[12]]<- list_rows
-r_object[[13]]<- list_sides
-r_object[[14]]<- list_numbers
-r_object[[15]]<- description
-r_object[[16]]<- sentences
-r_object[[17]]<- list_permutations_vec
-
-save(r_object,file=filename)
