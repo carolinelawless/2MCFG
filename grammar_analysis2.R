@@ -1,44 +1,80 @@
 remove(list=ls())
-source("functions2.R")
+source("functions.R")
+library(tictoc)
 library(seqinr)
 library(LaplacesDemon)
 
-date<- "2023-07-08"
-g<- "doubles"
-M<- 1000
-S<- 100
-alpha1<-alpha2<- 500
+tic()
+
+g<- "copy"
+M<- 5000
+number_sentences<- 10
+alpha1 <- 1 #scaling parameter for DP over nonterminals
+alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 1000
-#name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_b1=",b1)
-name<- paste0(date,"_G=",g,"_M=",M,"_S=",S,"_alpha1=alpha2=",alpha2,"_b1=",b1,"_function_modif")
-load(name)
+c2<- 1
+
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2)
+#print(description)
+#filename<- paste0(Sys.Date(),"_",description)
 
 terminals<- c("a","b","c")
+number_sentences1<- round(number_sentences/6)
+number_sentences2<- round(number_sentences/6)
+number_sentences3<- round(number_sentences/6)
+number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
 
-C_rules<- 0 #factor to add to each of the observed rules
-C_nonterminals<- 0 #factor to add to each of the observed nonterminals
+len1<- 4
+len2<- 6
+len3<- 8
+len4<- 10
+
+sentences<- list()
+
+for(i in 1:number_sentences1){
+  sent_short<- sample(terminals,len1/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
+
+for(i in 1:number_sentences2){
+  sent_short<- sample(terminals,len2/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
+
+for(i in 1:number_sentences3){
+  sent_short<- sample(terminals,len3/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
+
+for(i in 1:number_sentences4){
+  sent_short<- sample(terminals,len4/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
 
 
-list_nonterminals_vec_long<- r_object[[1]]
-list_nonterminals_vec_short<- r_object[[2]]
-list_p_rules<- r_object[[3]]
-list_e_rules<- r_object[[4]]
 
-list_type_matrix<- r_object[[6]]
-list_epsilon_matrix<- r_object[[7]]
-list_terminals_matrix<- r_object[[8]]
-list_tree_matrix<- r_object[[9]]
-list_left_functions<- r_object[[10]]
-list_right_functions<- r_object[[11]]
-list_rows<- r_object[[12]]
-list_sides<- r_object[[13]]
-list_numbers<- r_object[[14]]
-description<- r_object[[15]]
-sentences<- r_object[[16]]
-list_permutations_vec<- r_object[[17]]
+
+source("SMC.R")
+source("functions2.R")
+
 
 list_grammars_all<- list()
 for(i in 1:M){
@@ -60,13 +96,11 @@ terminals_matrix<- grammar[[7]]
 permutations_vec<- grammar[[8]]
 e_rules_ordered<- unique_ordered(e_rules)
 e_rules_frequencies<- unique_frequencies(e_rules)
-####
-p_rule_frequencies<- vector(length = length(p_rules))
+p_rules_frequencies<- vector(length = length(p_rules))
 for(i in 1:length(p_rules)){
-  p_rule_frequencies[i]<- p_rules[[i]][[6]]
+  p_rules_frequencies[i]<- p_rules[[i]][[6]]
 }
-p_rule_mode<- p_rules[[which.max(p_rule_frequencies)]]
-####
+p_rule_mode<- p_rules[[which.max(p_rules_frequencies)]]
 
 Q<- 1000 #number of sentences to generate
 sim_sentences<- list()
@@ -75,7 +109,7 @@ edit_distance<- vector(length = Q)
 qq<- 0
 for(QQ in 1:Q){
   
-  #### construct a tree
+#### construct a tree
   
   stop<- TRUE
   while(stop == TRUE){
@@ -291,7 +325,6 @@ for(QQ in 1:Q){
     words_sep<- s2c(words)
     simulated_sentence<- c(simulated_sentence,words_sep)
   }
-  simulated_sentence
   if(length(which(simulated_sentence == ""))>0){
     simulated_sentence<- simulated_sentence[-(which(simulated_sentence == ""))]
   }
@@ -322,6 +355,9 @@ print(description)
 print("proportion of correct estimates:")
 print(qq/Q)
 
+e_rules<- unique_ordered(e_rules)
+e_rule_frequencies<- unique_frequencies(e_rules)
+
 r_object2<-list()
 r_object2[[1]]<- description
 r_object2[[2]]<- qq/Q
@@ -330,14 +366,13 @@ r_object2[[4]]<- sentence_length
 r_object2[[5]]<- ug
 r_object2[[6]]<- ug_frequencies
 r_object2[[7]]<- p_rules
-r_object2[[8]]<- p_rule_frequencies
-r_object2[[9]]<- unique_ordered(e_rules)
-r_object2[[10]]<- unique_frequencies(e_rules)
+r_object2[[8]]<- p_rules_frequencies
+r_object2[[9]]<- e_rules_ordered
+r_object2[[10]]<- e_rules_frequencies
 r_object2[[11]]<- sim_sentences
 r_object2[[12]]<- nonterminals_vec_long
 
+toc()
+
 filename<- paste0(Sys.Date(),"_",description,"_analysis")
 save(r_object2,file=filename)
-#(edit_distance,breaks= max(edit_distance)+1, main = "", xlab= "Edit distance", freq=FALSE)
-#hist(sentence_length,breaks=max(sentence_length)+1, main = "", xlab = "Sentence length",freq = FALSE)
-#hist(edit_distance/sentence_length,main="", xlab = "(edit distance)/length", freq=FALSE)
