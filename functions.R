@@ -110,65 +110,66 @@ base_production_random<- function(nonterminal){
 }
 
 kernel_parameters_function<- function(nonterminal,minimum,maximum){
-  index1<- which(gamma_matrix[,1]==nonterminal)
-  gamma1<- rgamma(1,gamma_matrix[index1,2],gamma_matrix[index1,3])
+  index1<- which(type_matrix[,1]==nonterminal)
   proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
   proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
   p_rules_star<- list()
-  q_star<- 0
-  qq<- 0
-  rule_probas<- vector()
   rule_probas_star<- vector()
+  q_star<- 0
+  q<- 0
   rule_indices_star<- vector()
   if(maximum>1){#this means production rules possible
-    index2 = which(nonterminals_vec_short == nonterminal)
-
+    index2 = which(nonterminals_vec_short == nonterminal) #rule_indices_star
+    rule_indices_star<- index2
     if(length(index2)>0){
-
       for(i in 1:length(index2)){
         j<- index2[i]
-        rule_probas[length(rule_probas)+1]<- p_rules[[j]][[6]]
-        if(p_rules[[j]][5] <= maximum){
-        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]]
+        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]] 
         rule_probas_star[length(rule_probas_star)+1]<- p_rules[[j]][[6]]
-        rule_indices_star[length(rule_indices_star)+1]<-j
-        }
-        
       }
     }
-    qq<- sum(rule_probas)
     q_star<- sum(rule_probas_star)
-    #s<- sum(dpois(2:maximum - 2,gamma1))
-    s<- 1
+    q<- q_star
+    if(length(e_rules)>0){
+      for(i in 1:length(e_rules)){
+        e_rule<- e_rules[[i]]
+        if(e_rule[1]== nonterminal){q<- q+1}
+      }
+    }
   }
-  if(minimum == 1 & maximum > 1){
-    proba_emission_star<- proba_emission/(s*(1-proba_emission) + proba_emission)
-    proba_production_star<- 1 - proba_emission_star
-    alpha_star<- alpha2*(s*(1-proba_emission) + proba_emission)
+  if(minimum == 1 & maximum > 2){
+    proba_emission_star<- proba_emission
+    alpha_star<- alpha2
   }
-  if(minimum == 2){
-    proba_emission_star<- (1-proba_epsilon)*proba_emission/(s*(1-proba_emission)+(1-proba_epsilon)*proba_emission)
-    proba_production_star<- 1 - proba_emission_star
-    alpha_star<- alpha2*(s*(1-proba_emission) + (1-proba_epsilon)*proba_emission)
+  if(minimum == 1 & maximum == 2){
+    proba_emission_star<- 1
+    alpha_star<- alpha2*proba_emission
+  }
+  if(minimum == 1 & maximum == 1){
+    proba_emission_star<- 1
+    alpha_star<- alpha2*proba_emission*proba_epsilon
+  }
+  if(minimum == 2 & maximum ==2){
+    proba_emission_star<- 1
+    alpha_star<- alpha2*proba_emission*(1-proba_epsilon)
+  }
+  if(minimum == 2 & maximum > 2){
+    proba_emission_star<- (1-proba_epsilon)*proba_emission/(1-proba_emission+(1-proba_epsilon)*proba_emission)
+    alpha_star<- alpha2*(1-proba_emission + (1-proba_epsilon)*proba_emission)
   }
   if(minimum > 2){
     proba_emission_star<- 0
-    proba_production_star<- 1
-    alpha_star<- alpha2*s*(1-proba_emission)
+    alpha_star<- alpha2*(1-proba_emission)
   }
-  if(maximum == 1){
-    proba_emission_star<- 1
-    proba_production_star<- 0
-    alpha_star<- alpha2*proba_emission*proba_epsilon
-  }
-  parameter_list<- list(proba_emission_star,proba_production_star,alpha_star,p_rules_star,q_star,qq,gamma1,proba_emission,proba_epsilon,rule_probas_star,rule_probas,rule_indices_star)
-    return(parameter_list)
+  parameter_list<- list(alpha_star,proba_emission_star,proba_epsilon,p_rules_star,q_star,rule_probas_star,q,rule_indices_star,proba_emission)
+  return(parameter_list)
 }
 
-dp_random<- function(nonterminal,minimum,maximum){
+dp_random<- function(nonterminal,minimum,maximum){ #####proba_emission
   permutation<- 0
   p_rules1<- p_rules
   weight<- 1
+  ww<- 1
   kernel_params<- kernel_parameters_function(nonterminal,minimum,maximum)
   alpha_star<- kernel_params[[1]]
   proba_emission_star<- kernel_params[[2]]
@@ -179,6 +180,7 @@ dp_random<- function(nonterminal,minimum,maximum){
   rule_probas_star<- kernel_params[[6]]
   q<- kernel_params[[7]]
   rule_indices_star<- kernel_params[[8]]
+  proba_emission<- kernel_params[[9]]
   
   draw1<- sample(0:1,1,prob=c(alpha_star,q_star))
   if(draw1==0){#new rule
@@ -197,14 +199,17 @@ dp_random<- function(nonterminal,minimum,maximum){
           x<- sentence[tt] #### the index here is tt?
           y<- "symbol"
           type<- 2
+          ww<- alpha2*proba_emission*(1-proba_epsilon)
         }else if(draw3==1){
           x<- sentence[tt]
           y<- ""
           type<- 3
+          ww<- alpha2*proba_emission*proba_epsilon/2
         }else if(draw3==2){
           x<- ""
           y<- "symbol"
           type<- 2
+          ww<- alpha2*proba_emission*proba_epsilon/2
         }
       }else if(minimum==2){
         x<- sentence[tt]
@@ -235,7 +240,7 @@ dp_random<- function(nonterminal,minimum,maximum){
     weight<- freq/(sum(rule_probas_star))/((freq+C_rules)/sum(rule_probas_star+C_rules))
   }
   weight<- weight*(alpha_star + q_star)/(alpha2 + q)
-  output<- list(rule,type,weight,p_rules1,permutation)
+  output<- list(rule,type,weight,p_rules1,permutation,ww)
   return(output)
 }
 
@@ -278,8 +283,8 @@ update<- function(min_or_max){
 }
 
 weight_e2<- function(nonterminal){
+  ww<- tree_matrix[row,3]
   w<- 1
-  
   nt_ind<- which(terminals_matrix[,1]==nonterminal)
   if(x!=""){
     x_ind<- which(terminals == x)
@@ -291,33 +296,40 @@ weight_e2<- function(nonterminal){
     d2<- terminals_matrix[nt_ind,(y_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
     w<- w*d2
   }
+  freq1<- 0
+  freq2<- 0
+  if(length(e_rules)>0){
+    if(side=="left"){
+      for(i in 1:length(e_rules)){
+        if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==x & e_rules[[i]][[3]]==y){
+          freq1<- freq1+1
+        }
+      }
+    }else if(side=="right"){
+      for(i in 1:length(e_rules)){
+        if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==y & e_rules[[i]][[3]]==x){
+          freq1<- freq1+1
+        }
+      }
+    }
+    for(i in 1:length(e_rules)){
+      if(e_rules[[i]][[1]]==nonterminal){
+        freq2<- freq2 + 1
+      }
+    }
+    for(i in 1:length(p_rules)){
+      if(p_rules[[i]][[1]]==nonterminal){
+        freq2<- freq2 + p_rules[[i]][[6]]
+      }
+    }
+  }
+  #w <- w + freq1/ww/(alpha2 + freq2) ########
+  w<- w + freq1/ww
   
-  freq<- 0
-  if(side=="left"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==x & e_rules[[i]][[3]]==y){
-        freq<- freq+1
-      }
-    }
-  }else if(side=="right"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==y & e_rules[[i]][[3]]==x){
-        freq<- freq+1
-      }
-    }
-  }
-  ind_emission<- which(type_matrix[,1]==nonterminal)
-  ind_epsilon<- which(epsilon_matrix[,1]== nonterminal)
-  proba_epsilon_expected<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
-  proba_emission_expected<- type_matrix[ind_emission,2]/(type_matrix[ind_emission,2]+ type_matrix[ind_emission,3])
-  if(x!="" & y!= ""){
-    w<- w + freq/(proba_emission_expected*(1-proba_epsilon_expected))
-  }else{
-    w<- w + freq/(proba_emission_expected*proba_epsilon_expected/2)
-  }
-
   return(w)
 }
+
+
 
 
 
