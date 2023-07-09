@@ -7,18 +7,17 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 10000
-number_sentences<- 10
+M<- 50000
+number_sentences<- 50
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 1000
+c2<- 1
 
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2)
-#print(description)
-#filename<- paste0(Sys.Date(),"_",description)
+print(description)
 
 terminals<- c("a","b","c")
 number_sentences1<- round(number_sentences/6)
@@ -69,18 +68,13 @@ for(i in 1:number_sentences4){
   }
 }
 
-
-
-
 source("SMC.R")
 source("functions2.R")
-
 
 list_grammars_all<- list()
 for(i in 1:M){
   list_grammars_all[[i]]<- list(list_e_rules[[i]],list_p_rules[[i]], list_nonterminals_vec_short[[i]],list_nonterminals_vec_long[[i]],list_type_matrix[[i]],list_epsilon_matrix[[i]],list_terminals_matrix[[i]],list_permutations_vec[[i]]) 
 }
-
 
 ug<- unique_ordered(list_grammars_all)
 ug_frequencies<- unique_frequencies(list_grammars_all)
