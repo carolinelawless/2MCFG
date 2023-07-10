@@ -8,7 +8,7 @@ tic()
 
 g<- "copy"
 M<- 500000
-number_sentences<- 10
+number_sentences<- 50
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
