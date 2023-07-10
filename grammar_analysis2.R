@@ -7,8 +7,12 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 500000
-number_sentences<- 50
+M<- 10000
+number_sentences<- 10
+len1<- 6
+len2<- 8
+len3<- 10
+len4<- 10
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
@@ -16,7 +20,7 @@ b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len1,"to",len4)
 print(description)
 
 terminals<- c("a","b","c")
@@ -25,10 +29,7 @@ number_sentences2<- round(number_sentences/6)
 number_sentences3<- round(number_sentences/6)
 number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
 
-len1<- 4
-len2<- 6
-len3<- 8
-len4<- 10
+
 
 sentences<- list()
 
