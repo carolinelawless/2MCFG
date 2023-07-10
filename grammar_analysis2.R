@@ -7,12 +7,12 @@ library(LaplacesDemon)
 tic()
 
 g<- "doubles"
-M<- 50000
-number_sentences<- 25
+M<- 10000
+number_sentences<- 10
 len1<- 6
 len2<- 8
 len3<- 10
-len4<- 10
+len4<- 12
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
