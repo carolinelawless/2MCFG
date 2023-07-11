@@ -147,7 +147,7 @@ for(ss in 1:length(sentences)){
             
             nonterminals_vec_long<- c(nonterminals_vec_long,rule[[2]])
             
-
+            
             nc <- rule[[5]] #number of children
             nr <- nrow(tree_matrix) #number of rows
             if (nc == 1) {
@@ -166,7 +166,7 @@ for(ss in 1:length(sentences)){
             }
           }else if(type == 2 | type== 3){#emission rule
             
-
+            
             x<- rule
             
             if(type == 2 & x != ""){
@@ -630,4 +630,3 @@ for(ss in 1:length(sentences)){
   weights<- rep(1,M)
   
 }##ss 1:length(sentences)
-
