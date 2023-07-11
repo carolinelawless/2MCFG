@@ -6,9 +6,9 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "doubles"
+g<- "copy"
 M<- 50000
-number_sentences<- 25
+number_sentences<- 50
 len1<- 6
 len2<- 8
 len3<- 10
@@ -18,7 +18,7 @@ alpha2 <- 5 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
-c2<- 1000
+c2<- 1
 
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len1,"to",len4)
 print(description)
