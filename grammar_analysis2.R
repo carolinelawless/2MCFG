@@ -14,7 +14,7 @@ len2<- 8
 len3<- 10
 len4<- 12
 alpha1 <- 1 #scaling parameter for DP over nonterminals
-alpha2 <- 5 #scaling parameter for DP over rules
+alpha2 <- 1 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
@@ -104,7 +104,7 @@ edit_distance<- vector(length = Q)
 qq<- 0
 for(QQ in 1:Q){
   
-#### construct a tree
+  #### construct a tree
   
   stop<- TRUE
   while(stop == TRUE){
@@ -114,7 +114,7 @@ for(QQ in 1:Q){
     colnames(tree_matrix)<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
     tree_matrix[1,2]<- 1
     tree_matrix[1, 5]<- 3
-    tree_matrix[1, 6]<- 20
+    tree_matrix[1, 6]<- 50
     tree_matrix[1, 7]<- 1
     tree_matrix[1,8]<- 1
     left_functions<- list()
@@ -350,22 +350,28 @@ print(description)
 print("proportion of correct estimates:")
 print(qq/Q)
 
-e_rules<- unique_ordered(e_rules)
+#e_rules<- unique_ordered(e_rules)
 e_rule_frequencies<- unique_frequencies(e_rules)
 
 r_object2<-list()
 r_object2[[1]]<- description
-r_object2[[2]]<- qq/Q
-r_object2[[3]]<- edit_distance
-r_object2[[4]]<- sentence_length
-r_object2[[5]]<- ug
-r_object2[[6]]<- ug_frequencies
+r_object2[[2]]<- ug
+r_object2[[3]]<- ug_frequencies
+r_object2[[4]]<- e_rules
+r_object2[[5]]<- e_rules_ordered
+r_object2[[6]]<- e_rules_frequencies
 r_object2[[7]]<- p_rules
 r_object2[[8]]<- p_rules_frequencies
-r_object2[[9]]<- e_rules_ordered
-r_object2[[10]]<- e_rules_frequencies
-r_object2[[11]]<- sim_sentences
-r_object2[[12]]<- nonterminals_vec_long
+r_object2[[9]]<- nonterminals_vec_long
+r_object2[[10]]<- nonterminals_vec_short
+r_object2[[11]]<- type_matrix
+r_object2[[12]]<- epsilon_matrix
+r_object2[[13]]<- terminals_matrix
+r_object2[[14]]<- permutations_vec
+r_object2[[15]]<- sim_sentences
+r_object2[[16]]<- sentence_length
+r_object2[[17]]<- edit_distance
+r_object2[[18]]<- qq/Q
 
 toc()
 
