@@ -6,15 +6,15 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "doubles"
+g<- "copy"
 M<- 50000
-number_sentences<- 25
+number_sentences<- 50
 len1<- 6
 len2<- 8
 len3<- 10
 len4<- 12
-alpha1 <- 10 #scaling parameter for DP over nonterminals
-alpha2 <- 10 #scaling parameter for DP over rules
+alpha1 <- 1 #scaling parameter for DP over nonterminals
+alpha2 <- 1 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
 b2<- 1
 c1<- 1 #Beta parameters for epsilon
