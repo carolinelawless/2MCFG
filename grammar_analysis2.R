@@ -6,8 +6,8 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "doubles"
-M<- 50000
+g<- "copy"
+M<- 100000
 number_sentences<- 100
 len1<- 6
 len2<- 8
