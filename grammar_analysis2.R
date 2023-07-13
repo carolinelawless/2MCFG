@@ -6,15 +6,14 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "doubles"
+g<- "copy"
 M<- 50000
-number_sentences<- 50
+number_sentences<- 100
 len1<- 6
 len2<- 8
 len3<- 10
 len4<- 12
-len5<- 16
-len6<- 18
+
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 1 #scaling parameter for DP over rules
 b1<- 1 #Beta parameters for type = emission
@@ -29,9 +28,8 @@ terminals<- c("a","b","c")
 number_sentences1<- round(number_sentences/6)
 number_sentences2<- round(number_sentences/6)
 number_sentences3<- round(number_sentences/6)
-number_sentences4<- round(number_sentences/6)
-number_sentences5<- round(number_sentences/6)
-number_sentences6<- 1 - number_sentences1 - number_sentences2 - number_sentences3 - number_sentences4 - number_sentences5
+number_sentences4<- 1 - number_sentences1 - number_sentences2 - number_sentences3
+
 
 sentences<- list()
 
@@ -71,23 +69,7 @@ for(i in 1:number_sentences4){
   }
 }
 
-for(i in 1:number_sentences5){
-  sent_short<- sample(terminals,len5/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
 
-for(i in 1:number_sentences6){
-  sent_short<- sample(terminals,len6/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
 
 source("SMC.R")
 source("functions2.R")
