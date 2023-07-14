@@ -6,15 +6,10 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "doubles"
-M<- 100000
-number_sentences<- 100
-len1<- 6
-len2<- 8
-len3<- 10
-len4<- 12
-len5<- 14
-len6<- 16
+g<- "copy"
+M<- 50000
+number_sentences<- 50
+len1<- 10
 
 alpha1 <- 1 #scaling parameter for DP over nonterminals
 alpha2 <- 1 #scaling parameter for DP over rules
@@ -23,16 +18,12 @@ b2<- 1
 c1<- 1 #Beta parameters for epsilon
 c2<- 1000
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len1,"to",len6)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len1)
 print(description)
 
 terminals<- c("a","b","c")
-number_sentences1<- round(number_sentences/6)
-number_sentences2<- round(number_sentences/6)
-number_sentences3<- round(number_sentences/6)
-number_sentences4<- round(number_sentences/6)
-number_sentences5<- round(number_sentences/6)
-number_sentences6<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3 - number_sentences4 - number_sentences5
+number_sentences1<- number_sentences
+
 
 sentences<- list()
 
@@ -44,38 +35,7 @@ for(i in 1:number_sentences1){
     sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
   }
 }
-for(i in 1:number_sentences2){
-  sent_short<- sample(terminals,len2/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-for(i in 1:number_sentences3){
-  sent_short<- sample(terminals,len3/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-for(i in 1:number_sentences5){
-  sent_short<- sample(terminals,len5/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-for(i in 1:number_sentences6){
-  sent_short<- sample(terminals,len6/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
+
 
 source("SMC.R")
 source("functions2.R")
