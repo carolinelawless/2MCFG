@@ -7,7 +7,7 @@ library(LaplacesDemon)
 tic()
 
 g<- "doubles"
-M<- 50000
+M<- 100000
 number_sentences<- 50
 len1<- 10
 
