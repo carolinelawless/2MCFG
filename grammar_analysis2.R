@@ -7,7 +7,7 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 50000
+M<- 100000
 number_sentences<- 100
 len1<- 6
 len2<- 8
