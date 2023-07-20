@@ -28,6 +28,11 @@ for(i in 1:M){
   list_epsilon_matrix[[i]]<- matrix(c(1,c1,c2),nrow=1,ncol=3)
   list_terminals_matrix[[i]]<- matrix(1,nrow=1,ncol=length(terminals)+1)
   list_permutations_vec[[i]]<- rep(1,factorial(5))
+  if(g=="doubles"){
+    list_permutations_vec[[i]][49]<- 100000
+    }
+  if(g == "copy"){
+    list_permutations_vec[[i]][51]<- 100000
 }
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
 list_nonterminals_vec_short1<- list_nonterminals_vec_short
