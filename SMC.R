@@ -33,6 +33,7 @@ for(i in 1:M){
     }
   if(g == "copy"){
     list_permutations_vec[[i]][51]<- 100000
+    }
 }
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
 list_nonterminals_vec_short1<- list_nonterminals_vec_short
