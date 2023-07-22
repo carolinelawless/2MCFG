@@ -29,7 +29,7 @@ for(i in 1:M){
   list_type_matrix[[i]]<- matrix(c(1,b1,b2),nrow=1,ncol=3)
   list_epsilon_matrix[[i]]<- matrix(c(1,c1,c2),nrow=1,ncol=3)
   list_terminals_matrix[[i]]<- matrix(1,nrow=1,ncol=length(terminals)+1)
-  list_permutations_vec[[i]]<- rep(0.1,factorial(5))
+  list_permutations_vec[[i]]<- rep(permutations_param,factorial(5))
 }
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
 list_nonterminals_vec_short1<- list_nonterminals_vec_short
