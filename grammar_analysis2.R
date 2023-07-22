@@ -79,7 +79,7 @@ sentence_length<- vector(length=Q)
 edit_distance<- vector(length = Q)
 qq<- 0
 for(QQ in 1:Q){
-  print(QQ)
+  print(paste0("QQ=",QQ))
   #### construct a tree
   
   stop<- TRUE
@@ -121,7 +121,6 @@ for(QQ in 1:Q){
       rule<- rule_all[[1]]
       stop<- rule_all[[2]]
       draws<- rule_all[[3]]
-      print(draws)
       permutation1<- rule_all[[4]]
       rule_index<- rule_all[[5]]
       
