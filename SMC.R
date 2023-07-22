@@ -4,6 +4,7 @@ C_nonterminals<- 0 #factor to add to each of the observed nonterminals
 list_nonterminals_vec_long<- list()
 list_nonterminals_vec_short<- list()
 list_p_rules<- list()
+list_p_rules_short<- list()
 list_e_rules<- list()
 list_type_matrix<- list()
 list_epsilon_matrix<- list()
@@ -23,20 +24,17 @@ for(i in 1:M){
   list_nonterminals_vec_long[[i]]<- 1
   list_nonterminals_vec_short[[i]]<- vector()
   list_p_rules[[i]]<- list()
+  list_p_rules_short[[i]]<- list()
   list_e_rules[[i]]<- list()
   list_type_matrix[[i]]<- matrix(c(1,b1,b2),nrow=1,ncol=3)
   list_epsilon_matrix[[i]]<- matrix(c(1,c1,c2),nrow=1,ncol=3)
   list_terminals_matrix[[i]]<- matrix(1,nrow=1,ncol=length(terminals)+1)
-  list_permutations_vec[[i]]<- rep(1,factorial(5))
-  if(g == "copy"){
-    list_permutations_vec[[i]][51]<- 119
-  }else if(g == "doubles"){
-    list_permutations_vec[[i]][49]<- 119
-  }
+  list_permutations_vec[[i]]<- rep(0.1,factorial(5))
 }
 list_nonterminals_vec_long1<- list_nonterminals_vec_long
 list_nonterminals_vec_short1<- list_nonterminals_vec_short
 list_p_rules1<- list_p_rules
+list_p_rules_short1<- list_p_rules_short
 list_e_rules1<- list_e_rules
 list_type_matrix1<- list_type_matrix
 list_epsilon_matrix1<- list_epsilon_matrix
@@ -52,7 +50,7 @@ for(ss in 1:length(sentences)){
   
   for(i in 1:M){
     list_tree_matrix[[i]]<- matrix(ncol=8)
-    colnames(list_tree_matrix[[i]])<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
+    colnames(list_tree_matrix[[i]])<- c("ind_1","ind_2","w_e1","type","min","max","B","nrows")
     list_tree_matrix[[i]][1,2]<- 1
     list_tree_matrix[[i]][1, 5]<- length(sentence)
     list_tree_matrix[[i]][1, 6]<- length(sentence)
@@ -71,32 +69,36 @@ for(ss in 1:length(sentences)){
   list_sides1<- list_sides
   list_numbers1<- list_numbers
   
+  for(i in 1:M){
+    
+    nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
+    nonterminals_vec_short<- list_nonterminals_vec_short[[i]]
+    p_rules<- list_p_rules[[i]]
+    p_rules_short<- list_p_rules_short[[i]]
+    e_rules<- list_e_rules[[i]]
+    type_matrix<- list_type_matrix[[i]]
+    epsilon_matrix<- list_epsilon_matrix[[i]]
+    terminals_matrix<- list_terminals_matrix[[i]]
+    permutations_vec<- list_permutations_vec[[i]]
+    tree_matrix<- list_tree_matrix[[i]]
+    left_functions<- list_left_functions[[i]]
+    right_functions<- list_right_functions[[i]]
+    rows<- list_rows[[i]]
+    sides<- list_sides[[i]]
+    numbers<- list_numbers[[i]]
+    row<- tail(rows,1)
+    side<- tail(sides,1)
+    number<- tail(numbers,1)
+    w<- 1
+    
+    
   for(ttt in 1:length(sentence)){
     #print(ttt)
-    for(i in 1:M){
+
       tt<- ttt
-      nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
-      nonterminals_vec_short<- list_nonterminals_vec_short[[i]]
-      p_rules<- list_p_rules[[i]]
-      e_rules<- list_e_rules[[i]]
-      type_matrix<- list_type_matrix[[i]]
-      epsilon_matrix<- list_epsilon_matrix[[i]]
-      terminals_matrix<- list_terminals_matrix[[i]]
-      permutations_vec<- list_permutations_vec[[i]]
-      tree_matrix<- list_tree_matrix[[i]]
-      left_functions<- list_left_functions[[i]]
-      right_functions<- list_right_functions[[i]]
-      rows<- list_rows[[i]]
-      sides<- list_sides[[i]]
-      numbers<- list_numbers[[i]]
-      row<- tail(rows,1)
-      side<- tail(sides,1)
-      number<- tail(numbers,1)
-      w<- 1
-      
+
       while(tt == ttt){
         if(is.na(tree_matrix[row,4])){#then draw a rule
-          
           tree_matrix[row,8]<- nrow(tree_matrix)
           minimum<- tree_matrix[row, 5] #minimal number of terminal symbols associated with current nonterminal
           maximum<- tree_matrix[row, 6] #maximal number of terminal symbols associated with current nonterminal
@@ -112,13 +114,11 @@ for(ss in 1:length(sentences)){
           rule<- new_rule[[1]]
           type<- new_rule[[2]]
           weight<- new_rule[[3]]
-          p_rules<- new_rule[[4]]
-          permutation<- new_rule[[5]]
-          if(permutation>0){
-            permutations_vec[permutation]<- permutations_vec[permutation]+1
-          }
+          e1_weight<- new_rule[[4]]
+          
+          tree_matrix[row,3]<- e1_weight
           tree_matrix[row,4]<- type
-          tree_matrix[row,3]<- new_rule[[6]]
+          
           w<- w*weight
           
           index<- which(type_matrix[,1]==nonterminal)
@@ -136,19 +136,22 @@ for(ss in 1:length(sentences)){
           
           if (type == 0 | type ==1){#production rule
             
-            
+            p_rule_short<- c(rule[[1]],rule[[2]],rule[[6]])
+            permutation<- p_rule_short[4]
+            permutations_vec[permutation]<- permutations_vec[permutation]+1
             
             left_functions[[row]] <- as.list(rule[[3]])
             right_functions[[row]] <- as.list(rule[[4]])
-            if(rule[[6]]==1){
-              p_rules[[length(p_rules)+1]]<- rule
-              nonterminals_vec_short<- c(nonterminals_vec_short,nonterminal)
-            }
+            
+            p_rules[[length(p_rules)+1]]<- rule
+            p_rules_short[[length(p_rules_short)+1]]<- p_rule_short
+            nonterminals_vec_short<- c(nonterminals_vec_short,nonterminal)
+            
             
             nonterminals_vec_long<- c(nonterminals_vec_long,rule[[2]])
             
             
-            nc <- rule[[5]] #number of children
+            nc <- 2 #number of children
             nr <- nrow(tree_matrix) #number of rows
             if (nc == 1) {
               tree_matrix <-rbind(tree_matrix, c(row, nr + 1, rep(NA, 2), minimum, maximum, rule[[2]][1],nr+nc))
@@ -345,88 +348,14 @@ for(ss in 1:length(sentences)){
             }
           }
         }
+        tree_matrix
+        ttt
+        row
       }# while tt == ttt
       
-      list_nonterminals_vec_long[[i]]<- nonterminals_vec_long
-      list_nonterminals_vec_short[[i]]<- nonterminals_vec_short
-      list_p_rules[[i]]<- p_rules
-      list_e_rules[[i]]<- e_rules
-      list_type_matrix[[i]]<- type_matrix
-      list_epsilon_matrix[[i]]<- epsilon_matrix
-      list_terminals_matrix[[i]]<- terminals_matrix
-      list_permutations_vec[[i]]<- permutations_vec
-      list_tree_matrix[[i]]<- tree_matrix
-      list_left_functions[[i]]<- left_functions
-      list_right_functions[[i]]<- right_functions
-      list_rows[[i]]<- rows
-      list_sides[[i]]<- sides
-      list_numbers[[i]]<- numbers
-      weights[i]<- w
-      
-      vec_max_nonterminals[i]<- max(nonterminals_vec_long) 
-    }#for i in 1:M   
-    list_max_nonterminals[[length(list_max_nonterminals)+1]]<- vec_max_nonterminals
-    
-    particles<- sample(1:M,M,weights,replace=TRUE)
-    
-    for(i in 1:M){
-      j<- particles[i]
-      list_nonterminals_vec_long1[[i]]<- list_nonterminals_vec_long[[j]]
-      list_nonterminals_vec_short1[[i]]<- list_nonterminals_vec_short[[j]]
-      list_p_rules1[[i]]<- list_p_rules[[j]]
-      list_e_rules1[[i]]<- list_e_rules[[j]]
-      list_type_matrix1[[i]]<- list_type_matrix[[j]]
-      list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
-      list_terminals_matrix1[[i]]<- list_terminals_matrix[[j]]
-      list_permutations_vec1[[i]]<- list_permutations_vec[[j]]
-      list_tree_matrix1[[i]]<- list_tree_matrix[[j]]
-      list_left_functions1[[i]]<- list_left_functions[[j]]
-      list_right_functions1[[i]]<- list_right_functions[[j]]
-      list_rows1[[i]]<- list_rows[[j]]
-      list_sides1[[i]]<- list_sides[[j]]
-      list_numbers1[[i]]<- list_numbers[[j]]
-    }
-    for(i in 1:M){
-      list_nonterminals_vec_long[[i]]<- list_nonterminals_vec_long1[[i]]
-      list_nonterminals_vec_short[[i]]<- list_nonterminals_vec_short1[[i]]
-      list_p_rules[[i]]<- list_p_rules1[[i]]
-      list_e_rules[[i]]<- list_e_rules1[[i]]
-      list_type_matrix[[i]]<- list_type_matrix1[[i]]
-      list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
-      list_terminals_matrix[[i]]<- list_terminals_matrix1[[i]]
-      list_permutations_vec[[i]]<- list_permutations_vec1[[i]]
-      list_tree_matrix[[i]]<- list_tree_matrix1[[i]]
-      list_left_functions[[i]]<- list_left_functions1[[i]]
-      list_right_functions[[i]]<- list_right_functions1[[i]]
-      list_rows[[i]]<- list_rows1[[i]]
-      list_sides[[i]]<- list_sides1[[i]]
-      list_numbers[[i]]<- list_numbers1[[i]]
-    }
-    weights1<- weights
-    weights<- rep(1,M)
-    
-    
   }#ttt in 1:length(sentence)
+
   
-  for(i in 1:M){
-    nonterminals_vec_long<- list_nonterminals_vec_long[[i]]
-    nonterminals_vec_short<- list_nonterminals_vec_short[[i]]
-    p_rules<- list_p_rules[[i]]
-    e_rules<- list_e_rules[[i]]
-    type_matrix<- list_type_matrix[[i]]
-    epsilon_matrix<- list_epsilon_matrix[[i]]
-    terminals_matrix<- list_terminals_matrix[[i]]
-    permutations_vec<- list_permutations_vec[[i]]
-    tree_matrix<- list_tree_matrix[[i]]
-    left_functions<- list_left_functions[[i]]
-    right_functions<- list_right_functions[[i]]
-    rows<- list_rows[[i]]
-    sides<- list_sides[[i]]
-    numbers<- list_numbers[[i]]
-    row<- tail(rows,1)
-    side<- tail(sides,1)
-    number<- tail(numbers,1)
-    w<- 1
     
     count<- 0
     if(length(left_functions[[1]])>0){
@@ -578,6 +507,7 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_long[[i]]<- nonterminals_vec_long
     list_nonterminals_vec_short[[i]]<- nonterminals_vec_short
     list_p_rules[[i]]<- p_rules
+    list_p_rules_short[[i]]<- p_rules_short
     list_e_rules[[i]]<- e_rules
     list_type_matrix[[i]]<- type_matrix
     list_epsilon_matrix[[i]]<- epsilon_matrix
@@ -599,6 +529,7 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_long1[[i]]<- list_nonterminals_vec_long[[j]]
     list_nonterminals_vec_short1[[i]]<- list_nonterminals_vec_short[[j]]
     list_p_rules1[[i]]<- list_p_rules[[j]]
+    list_p_rules_short1[[i]]<- list_p_rules_short[[j]]
     list_e_rules1[[i]]<- list_e_rules[[j]]
     list_type_matrix1[[i]]<- list_type_matrix[[j]]
     list_epsilon_matrix1[[i]]<- list_epsilon_matrix[[j]]
@@ -615,6 +546,7 @@ for(ss in 1:length(sentences)){
     list_nonterminals_vec_long[[i]]<- list_nonterminals_vec_long1[[i]]
     list_nonterminals_vec_short[[i]]<- list_nonterminals_vec_short1[[i]]
     list_p_rules[[i]]<- list_p_rules1[[i]]
+    list_p_rules_short[[i]]<- list_p_rules_short1[[i]]
     list_e_rules[[i]]<- list_e_rules1[[i]]
     list_type_matrix[[i]]<- list_type_matrix1[[i]]
     list_epsilon_matrix[[i]]<- list_epsilon_matrix1[[i]]
