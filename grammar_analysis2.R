@@ -7,34 +7,27 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 5000
-number_sentences<- 25
-len1<- 6
-len2<- 8
-len3<- 10
-len4<- 12
-alpha1 <- 0.001 #scaling parameter for DP over nonterminals
-alpha2 <- 0.001 #scaling parameter for DP over rules
-b1<- 1 #Beta parameters for type = emission
-b2<- 1
+M<- 1000
+number_sentences<- 10
+len<- 10
+alpha1 <- 0.00001 #scaling parameter for DP over nonterminals
+alpha2 <- 0.00001 #scaling parameter for DP over rules
+b1<- 10 #Beta parameters for type = emission
+b2<- 10
 c1<- 1 #Beta parameters for epsilon
-c2<- 1000
+c2<- 1
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len1,"to",len4)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len)
 print(description)
 
 terminals<- c("a","b","c")
-number_sentences1<- round(number_sentences/6)
-number_sentences2<- round(number_sentences/6)
-number_sentences3<- round(number_sentences/6)
-number_sentences4<- number_sentences - number_sentences1 - number_sentences2 - number_sentences3
 
 
 
 sentences<- list()
 
-for(i in 1:number_sentences1){
-  sent_short<- sample(terminals,len1/2,replace = TRUE)
+for(i in 1:number_sentences){
+  sent_short<- sample(terminals,len/2,replace = TRUE)
   if(g=="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }else if(g=="doubles"){
@@ -42,32 +35,7 @@ for(i in 1:number_sentences1){
   }
 }
 
-for(i in 1:number_sentences2){
-  sent_short<- sample(terminals,len2/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
 
-for(i in 1:number_sentences3){
-  sent_short<- sample(terminals,len3/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
-
-for(i in 1:number_sentences4){
-  sent_short<- sample(terminals,len4/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
-}
 
 source("SMC.R")
 source("functions2.R")
@@ -89,13 +57,20 @@ type_matrix<- grammar[[5]]
 epsilon_matrix<- grammar[[6]]
 terminals_matrix<- grammar[[7]]
 permutations_vec<- grammar[[8]]
+p_rules_short<- list()
+for(i in 1:length(p_rules)){
+p_rules_short[[length(p_rules_short)+1]]<- list(p_rules[[i]][[1]],p_rules[[i]][[2]],p_rules[[i]][[3]],p_rules[[i]][[4]],p_rules[[i]][[6]])
+}
 e_rules_ordered<- unique_ordered(e_rules)
 e_rules_frequencies<- unique_frequencies(e_rules)
-p_rules_frequencies<- vector(length = length(p_rules))
-for(i in 1:length(p_rules)){
-  p_rules_frequencies[i]<- p_rules[[i]][[6]]
-}
-p_rule_mode<- p_rules[[which.max(p_rules_frequencies)]]
+p_rules_ordered<- unique_ordered(p_rules_short)
+p_rules_frequencies<- unique_frequencies(p_rules_short)
+p_rules_ordered[[1]]
+e_rules_ordered[[1]]
+e_rules_ordered[[2]]
+e_rules_ordered[[3]]
+(p_rules_ordered[[1]][[5]]-1)%/%24
+p_rules_ordered[[1]][[5]]%%24
 
 Q<- 1000 #number of sentences to generate
 sim_sentences<- list()
@@ -103,7 +78,7 @@ sentence_length<- vector(length=Q)
 edit_distance<- vector(length = Q)
 qq<- 0
 for(QQ in 1:Q){
-  
+  print(QQ)
   #### construct a tree
   
   stop<- TRUE
@@ -114,7 +89,7 @@ for(QQ in 1:Q){
     colnames(tree_matrix)<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
     tree_matrix[1,2]<- 1
     tree_matrix[1, 5]<- 3
-    tree_matrix[1, 6]<- 50
+    tree_matrix[1, 6]<- 20
     tree_matrix[1, 7]<- 1
     tree_matrix[1,8]<- 1
     left_functions<- list()
@@ -141,10 +116,13 @@ for(QQ in 1:Q){
         terminals_matrix<- rbind(terminals_matrix,c(nonterminal,rep(1,length(terminals))))
       }
       
-      rule_all<- dp_random(nonterminal, minimum, maximum)
+      rule_all<- dp_random2(nonterminal, minimum, maximum)
       rule<- rule_all[[1]]
       stop<- rule_all[[2]]
       draws<- rule_all[[3]]
+      print(draws)
+      permutation1<- rule_all[[4]]
+      rule_index<- rule_all[[5]]
       
       if(draws[2]==0){#production
         tree_matrix[row, 3]<- 2
@@ -178,8 +156,10 @@ for(QQ in 1:Q){
           tree_matrix<- update("min")
         }
       }
-      
+    
       row_vec<- tree_matrix[,3]
+      tree_matrix
+      
     }
   }
   
