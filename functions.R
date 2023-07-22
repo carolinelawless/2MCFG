@@ -104,8 +104,8 @@ base_production_random<- function(nonterminal){
   nonterminals<- nonterminals_with_weights[[1]]
   weight<- weight*nonterminals_with_weights[[2]]
   
-  
-  r<- list(nonterminal, nonterminals, string1, string2, N,0,weight,permutation)
+  permutation_density<- permutation_weights[permutation]/sum(permutation_weights)
+  r<- list(nonterminal, nonterminals, string1, string2,permutation_density,permutation)
   return(r)
 }
 
@@ -113,30 +113,15 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
   index1<- which(type_matrix[,1]==nonterminal)
   proba_emission<- rbeta(1,type_matrix[index1,2],type_matrix[index1,3])
   proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
-  p_rules_star<- list()
-  rule_probas_star<- vector()
-  q_star<- 0
   q<- 0
-  rule_indices_star<- vector()
-  if(maximum>1){#this means production rules possible
-    index2 = which(nonterminals_vec_short == nonterminal) #rule_indices_star
-    rule_indices_star<- index2
-    if(length(index2)>0){
-      for(i in 1:length(index2)){
-        j<- index2[i]
-        p_rules_star[[length(p_rules_star)+1]]<- p_rules[[j]] 
-        rule_probas_star[length(rule_probas_star)+1]<- p_rules[[j]][[6]]
-      }
-    }
-    q_star<- sum(rule_probas_star)
-    q<- q_star
-    if(length(e_rules)>0){
-      for(i in 1:length(e_rules)){
+  q = length(which(nonterminals_vec_short == nonterminal)) #number of p_rules
+  if(length(e_rules)>0){
+    for(i in 1:length(e_rules)){
         e_rule<- e_rules[[i]]
-        if(e_rule[1]== nonterminal){q<- q+1}
+        if(e_rule[1]== nonterminal){q<- q+1} #+ number of e_rules
       }
     }
-  }
+  
   if(minimum == 1 & maximum > 2){
     proba_emission_star<- proba_emission
     alpha_star<- alpha2
@@ -155,92 +140,79 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
   }
   if(minimum == 2 & maximum > 2){
     proba_emission_star<- (1-proba_epsilon)*proba_emission/(1-proba_emission+(1-proba_epsilon)*proba_emission)
-    alpha_star<- alpha2*(1-proba_emission + (1-proba_epsilon)*proba_emission)
+    alpha_star<- alpha2*(1-proba_emission+(1-proba_epsilon)*proba_emission)
   }
   if(minimum > 2){
     proba_emission_star<- 0
     alpha_star<- alpha2*(1-proba_emission)
   }
-  parameter_list<- list(alpha_star,proba_emission_star,proba_epsilon,p_rules_star,q_star,rule_probas_star,q,rule_indices_star,proba_emission)
+  parameter_list<- list(proba_emission,proba_epsilon,proba_emission_star,q,alpha_star)
   return(parameter_list)
 }
 
-dp_random<- function(nonterminal,minimum,maximum){ #####proba_emission
+dp_random<- function(nonterminal,minimum,maximum){
   permutation<- 0
-  p_rules1<- p_rules
   weight<- 1
   ww<- 1
   kernel_params<- kernel_parameters_function(nonterminal,minimum,maximum)
-  alpha_star<- kernel_params[[1]]
-  proba_emission_star<- kernel_params[[2]]
-  proba_production_star<- 1 - proba_emission_star
-  proba_epsilon<- kernel_params[[3]]
-  p_rules_star<- kernel_params[[4]]
-  q_star<- kernel_params[[5]]
-  rule_probas_star<- kernel_params[[6]]
-  q<- kernel_params[[7]]
-  rule_indices_star<- kernel_params[[8]]
-  proba_emission<- kernel_params[[9]]
+  proba_emission<- kernel_params[[1]]
+  proba_epsilon<- kernel_params[[2]]
+  proba_emission_star<- kernel_params[[3]]
+  q<- kernel_params[[4]]
+  alpha_star<- kernel_params[[5]]
   
-  draw1<- sample(0:1,1,prob=c(alpha_star,q_star))
-  if(draw1==0){#new rule
-    draw2<- sample(0:1,1,prob=c(proba_production_star,proba_emission_star))
-    if(draw2==0){#new production rule
-      rr <- base_production_random(nonterminal)
-      rr[[6]]<- 1 #frequency
-      rule<- rr
-      type<- 0
-      weight<- weight*rr[[7]]
-      permutation<- rr[[8]]
-    }else if(draw2==1){#new (partial) emission rule
-      if(minimum==1 & maximum >1){
-        draw3<- sample(0:2,1,prob=c(1-proba_epsilon,proba_epsilon/2,proba_epsilon/2))
-        if(draw3==0){
-          x<- sentence[tt] #### the index here is tt?
-          y<- "symbol"
-          type<- 2
-          ww<- alpha2*proba_emission*(1-proba_epsilon)
-        }else if(draw3==1){
-          x<- sentence[tt]
-          y<- ""
-          type<- 3
-          ww<- alpha2*proba_emission*proba_epsilon/2
-        }else if(draw3==2){
-          x<- ""
-          y<- "symbol"
-          type<- 2
-          ww<- alpha2*proba_emission*proba_epsilon/2
-        }
-      }else if(minimum==2){
-        x<- sentence[tt]
-        y<- "symbol"
-        type<- 2
-      }else if(maximum==1){
-        draw3<- sample(0:1,1)
-        if(draw3 == 0){
-          x<- sentence[tt]
-          y<- ""
-          type<- 3
-        }else if(draw3 == 1){
-          x<- ""
-          y<- "symbol"
-          type<- 2
-        }
-      }
-      rule<- x
+  
+  draw1<- sample(0:1,1,prob=c((1-proba_emission_star),proba_emission_star))
+  if(draw1==0){#new production rule
+    rule <- base_production_random(nonterminal)
+    rule_short<- c(rule[[1]],rule[[2]],rule[[6]])
+    type<- 0
+    if(length(p_rules_short)==0){
+      freq<- 0
+    }else{
+      freq<- sum(sapply(p_rules_short, identical, rule_short))
     }
-  }else if(draw1==1){#old (production) rule
-    samp<- sample(1:length(p_rules_star),1, prob=(rule_probas_star+C_rules))
-    rule<- p_rules_star[[samp]]
-    rule_ind<- rule_indices_star[samp]
-    freq<- rule[[6]]
-    rule[[6]]<- rule[[6]] + 1
-    p_rules1[[rule_ind]]<- rule
-    type<- 1
-    weight<- freq/(sum(rule_probas_star))/((freq+C_rules)/sum(rule_probas_star+C_rules))
+    permutation_density<- rule[[5]]
+    weight<- alpha_star + freq/((1-proba_emission)*permutation_density)
+  }else if(draw1==1){#new (partial) emission rule
+    weight<- alpha_star
+    if(minimum==1 & maximum >1){
+      draw2<- sample(0:2,1,prob=c(1-proba_epsilon,proba_epsilon/2,proba_epsilon/2))
+      if(draw2==0){
+        x<- sentence[tt] #### the index here is tt?
+        type<- 2 #(y<- "symbol")
+        #ww<- alpha2*proba_emission*(1-proba_epsilon)
+        ww<- proba_emission*(1-proba_epsilon)
+      }else if(draw2==1){
+        x<- sentence[tt]
+        type<- 3
+        #ww<- alpha2*proba_emission*proba_epsilon/2
+        ww<- proba_emission*proba_epsilon/2
+      }else if(draw2==2){
+        x<- ""
+        type<- 2 #(y<- "symbol")
+        #ww<- alpha2*proba_emission*proba_epsilon/2
+        ww<- proba_emission*proba_epsilon/2
+      }
+    }else if(minimum==2){
+      x<- sentence[tt]
+      type<- 2 #(y<- "symbol")
+    }else if(maximum==1){
+      draw2<- sample(0:1,1)
+      if(draw2 == 0){
+        x<- sentence[tt]
+        y<- ""
+        type<- 3
+      }else if(draw2 == 1){
+        x<- ""
+        type<- 2 #(y<- "symbol")
+      }
+    }
+    rule<- x
   }
-  weight<- weight*(alpha_star + q_star)/(alpha2 + q)
-  output<- list(rule,type,weight,p_rules1,permutation,ww)
+  
+  weight<- weight/(alpha2 + q)
+  output<- list(rule,type,weight,ww)
   return(output)
 }
 
