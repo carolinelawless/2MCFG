@@ -10,8 +10,8 @@ g<- "doubles"
 M<- 10000
 number_sentences<- 10
 len<- 10
-alpha1 <- 0.001 #scaling parameter for DP over nonterminals
-alpha2 <- 0.001 #scaling parameter for DP over rules
+alpha1 <- 0.01 #scaling parameter for DP over nonterminals
+alpha2 <- 0.01 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
