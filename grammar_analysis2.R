@@ -340,7 +340,7 @@ r_object2[[3]]<- ug_frequencies
 r_object2[[4]]<- e_rules
 r_object2[[5]]<- e_rules_ordered
 r_object2[[6]]<- e_rules_frequencies
-r_object2[[7]]<- p_rules
+r_object2[[7]]<- p_rules_ordered
 r_object2[[8]]<- p_rules_frequencies
 r_object2[[9]]<- nonterminals_vec_long
 r_object2[[10]]<- nonterminals_vec_short
