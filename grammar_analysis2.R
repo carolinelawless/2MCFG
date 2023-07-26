@@ -8,15 +8,15 @@ tic()
 
 g<- "copy"
 M<- 100000
-number_sentences<- 10
+number_sentences<- 50
 len<- 10
 alpha1 <- 0.1 #scaling parameter for DP over nonterminals
 alpha2 <- 0.1 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
-c2<- 10
-permutations_param<- 0.005
+c2<- 100
+permutations_param<- 0.01
 
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
 print(description)
