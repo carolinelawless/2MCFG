@@ -41,7 +41,6 @@ ESS<- vector(length = length(sentences))
 
 source("SMC.R")
 
-ESS
 source("functions2.R")
 
 list_grammars_all<- list()
@@ -355,6 +354,9 @@ r_object2[[15]]<- sim_sentences
 r_object2[[16]]<- sentence_length
 r_object2[[17]]<- edit_distance
 r_object2[[18]]<- qq/Q
+r_object2[[19]]<- ESS
+
+print(ESS)
 
 toc()
 
