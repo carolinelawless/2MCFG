@@ -7,8 +7,8 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 50000
-number_sentences<- 100
+M<- 100
+number_sentences<- 30
 len<- 10
 alpha1 <- 0.1 #scaling parameter for DP over nonterminals
 alpha2 <- 0.1 #scaling parameter for DP over rules
@@ -37,8 +37,11 @@ for(i in 1:number_sentences){
 }
 
 
+ESS<- vector(length = length(sentences))
 
 source("SMC.R")
+
+ESS
 source("functions2.R")
 
 list_grammars_all<- list()
@@ -60,7 +63,7 @@ terminals_matrix<- grammar[[7]]
 permutations_vec<- grammar[[8]]
 p_rules_short<- list()
 for(i in 1:length(p_rules)){
-p_rules_short[[length(p_rules_short)+1]]<- list(p_rules[[i]][[1]],p_rules[[i]][[2]],p_rules[[i]][[3]],p_rules[[i]][[4]],p_rules[[i]][[6]])
+  p_rules_short[[length(p_rules_short)+1]]<- list(p_rules[[i]][[1]],p_rules[[i]][[2]],p_rules[[i]][[3]],p_rules[[i]][[4]],p_rules[[i]][[6]])
 }
 e_rules_ordered<- unique_ordered(e_rules)
 e_rules_frequencies<- unique_frequencies(e_rules)
@@ -156,7 +159,7 @@ for(QQ in 1:Q){
           tree_matrix<- update("min")
         }
       }
-    
+      
       row_vec<- tree_matrix[,3]
       tree_matrix
       
