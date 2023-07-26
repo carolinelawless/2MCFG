@@ -92,11 +92,11 @@ for(ss in 1:length(sentences)){
     w<- 1
     
     
-  for(ttt in 1:length(sentence)){
-    #print(ttt)
-
+    for(ttt in 1:length(sentence)){
+      #print(ttt)
+      
       tt<- ttt
-
+      
       while(tt == ttt){
         if(is.na(tree_matrix[row,4])){#then draw a rule
           tree_matrix[row,8]<- nrow(tree_matrix)
@@ -353,9 +353,9 @@ for(ss in 1:length(sentences)){
         row
       }# while tt == ttt
       
-  }#ttt in 1:length(sentence)
-
-  
+    }#ttt in 1:length(sentence)
+    
+    
     
     count<- 0
     if(length(left_functions[[1]])>0){
@@ -522,7 +522,8 @@ for(ss in 1:length(sentences)){
     weights[i]<- w
     
   }
-  
+  weights<- weights/sum(weights)
+  ESS[ss]<- 1/sum(weights^2)
   particles<- sample(1:M,M,weights,replace=TRUE)
   for(i in 1:M){
     j<- particles[i]
