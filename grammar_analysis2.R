@@ -338,8 +338,10 @@ e_rule_frequencies<- unique_frequencies(e_rules)
 r_object2<-list()
 r_object2[[1]]<- description
 r_object2[[2]]<- ug
-r_object2[[3]]<- ug_frequencies
-r_object2[[4]]<- e_rules
+#r_object2[[3]]<- ug_frequencies #too long to load
+#r_object2[[4]]<- e_rules #too long to load
+r_object2[[3]]<- NA
+r_object2[[4]]<- NA
 r_object2[[5]]<- e_rules_ordered
 r_object2[[6]]<- e_rules_frequencies
 r_object2[[7]]<- p_rules_ordered
