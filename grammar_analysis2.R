@@ -8,15 +8,15 @@ tic()
 
 g<- "copy"
 M<- 10000
-number_sentences<- 100
-len<- 30
+number_sentences<- 50
+len<- 10
 alpha1 <- 0.1 #scaling parameter for DP over nonterminals
-alpha2 <- 0.5 #scaling parameter for DP over rules
+alpha2 <- 0.1 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
 c2<- 10
-permutations_param<- 0.01
+permutations_param<- 0.1
 
 description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
 print(description)
@@ -38,10 +38,22 @@ for(i in 1:number_sentences){
 
 
 ESS<- vector(length = length(sentences))
-
-source("SMC.R")
+list_number_nonterminals<- list()
+list_number_rules<- list()
+list_number_nonterminals_3<- list()
+list_number_rules_3<- list()
+list_number_nonterminals_10<- list()
+list_number_rules_10<- list()
 
 source("functions2.R")
+source("SMC.R")
+
+list_number_rules
+list_number_nonterminals
+list_number_rules_3
+list_number_nonterminals_3
+list_number_rules_10
+list_number_nonterminals_10
 
 list_grammars_all<- list()
 for(i in 1:M){
@@ -357,8 +369,19 @@ r_object2[[16]]<- sentence_length
 r_object2[[17]]<- edit_distance
 r_object2[[18]]<- qq/Q
 r_object2[[19]]<- ESS
+r_object2[[20]]<- list_number_rules
+r_object2[[21]]<- list_number_nonterminals
+r_object2[[22]]<- list_number_rules_3
+r_object2[[23]]<- list_number_nonterminals_3
+r_object2[[24]]<- list_number_rules_10
+r_object2[[25]]<- list_number_nonterminals_10
 
-print(ESS)
+print(paste0("number nts 10:",list_number_nonterminals_10[[length(sentences)]]))
+print(paste0("number rules 10:",list_number_rules_10[[length(sentences)]]))
+print(paste0("number nts 3:",list_number_nonterminals_3[[length(sentences)]]))
+print(paste0("number rules 3:",list_number_rules_3[[length(sentences)]]))
+print(paste0("number nts:",list_number_nonterminals_10[[length(sentences)]]))
+print(paste0("number rules:",list_number_rules_10[[length(sentences)]]))                                                  
 
 toc()
 
