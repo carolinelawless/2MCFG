@@ -47,12 +47,18 @@ for(ss in 1:length(sentences)){
   print(paste0("ss=",ss))
 
   number_nonterminals_vec<- vector(length = M)  
-  number_rules_vec<- vector(length = M)
+  number_p_rules_vec<- vector(length = M)
+  number_e_rules_vec<- vector(length = M)
   number_nonterminals_vec_3<- vector(length =M)
   number_nonterminals_vec_10<- vector(length =M)
-  number_rules_vec_3<- vector(length = M)
-  number_rules_vec_10<- vector(length = M)
-
+  number_p_rules_vec_3<- vector(length = M)
+  number_e_rules_vec_3<- vector(length = M)
+  number_p_rules_vec_10<- vector(length = M)
+  number_e_rules_vec_10<- vector(length = M)
+  number_permutations_vec<- vector(length = M)
+  number_permutations_vec_3<- vector(length = M)
+  number_permutations_vec_10<- vector(length = M)
+  
   sentence<- sentences[[ss]]
   
   for(i in 1:M){
@@ -533,16 +539,31 @@ for(ss in 1:length(sentences)){
   number_nonterminals_vec_3[i]<- length(which(table(nonterminals_vec_long)>3))
   number_nonterminals_vec_10[i]<- length(which(table(nonterminals_vec_long)>10))
 
-  number_rules_vec[i]<- length(unique_frequencies((e_rules))) + length(unique_frequencies(p_rules_short))
-  number_rules_vec_3[i]<- length(which(unique_frequencies(e_rules)>3)) + length(which(unique_frequencies(p_rules_short)>3))
-  number_rules_vec_10[i]<- length(which(unique_frequencies(e_rules)>10)) + length(which(unique_frequencies(p_rules_short)>10))
+  number_p_rules_vec[i]<- length(unique_frequencies(p_rules_short))
+  number_p_rules_vec_3[i]<- length(which(unique_frequencies(p_rules_short)>3))
+  number_p_rules_vec_10[i]<- length(which(unique_frequencies(p_rules_short)>10))
+  
+  number_e_rules_vec[i]<- length(unique_frequencies((e_rules))) 
+  number_e_rules_vec_3[i]<- length(which(unique_frequencies(e_rules)>3)) 
+  number_e_rules_vec_10[i]<- length(which(unique_frequencies(e_rules)>10)) 
+  
+  number_permutations_vec[i]<- length(which(permutations_vec > permutations_param))
+  number_permutations_vec_3[i]<- length(which(permutations_vec >= (permutations_param + 3)))
+  number_permutations_vec_10[i]<- length(which(permutations_vec >= (permutations_param + 10)))
   }
-  list_number_rules[[length(list_number_rules)+1]]<- number_rules_vec
+  list_number_p_rules[[length(list_number_p_rules)+1]]<- number_p_rules_vec
+  list_number_e_rules[[length(list_number_e_rules)+1]]<- number_e_rules_vec
   list_number_nonterminals[[length(list_number_nonterminals)+1]]<- number_nonterminals_vec
-  list_number_rules_3[[length(list_number_rules_3)+1]]<- number_rules_vec_3
-  list_number_rules_10[[length(list_number_rules_10)+1]]<- number_rules_vec_10
+  list_number_p_rules_3[[length(list_number_p_rules_3)+1]]<- number_p_rules_vec_3
+  list_number_e_rules_3[[length(list_number_e_rules_3)+1]]<- number_e_rules_vec_3
+  list_number_p_rules_10[[length(list_number_p_rules_10)+1]]<- number_p_rules_vec_10
+  list_number_e_rules_10[[length(list_number_e_rules_10)+1]]<- number_e_rules_vec_10
   list_number_nonterminals_3[[length(list_number_nonterminals_3)+1]]<- number_nonterminals_vec_3
   list_number_nonterminals_10[[length(list_number_nonterminals_10)+1]]<- number_nonterminals_vec_10
+  list_number_permutations[[length(list_number_permutations) + 1]]<- number_permutations_vec
+  list_number_permutations_3[[length(list_number_permutations_3) + 1]]<- number_permutations_vec_3
+  list_number_permutations_10[[length(list_number_permutations_10) + 1]]<- number_permutations_vec_10
+  
   weights<- weights/sum(weights)
   ESS[ss]<- 1/sum(weights^2)
   particles<- sample(1:M,M,weights,replace=TRUE)
