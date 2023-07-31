@@ -54,19 +54,6 @@ list_number_permutations_10<- list()
 source("functions2.R")
 source("SMC.R")
 
-list_number_p_rules
-list_number_e_rules
-list_number_nonterminals
-list_number_p_rules_3
-list_number_e_rules_3
-list_number_nonterminals_3
-list_number_p_rules_10
-list_number_e_rules_10
-list_number_nonterminals_10
-list_number_permutations
-list_number_permutations_3
-list_number_permutations_10
-
 list_grammars_all<- list()
 for(i in 1:M){
   list_grammars_all[[i]]<- list(list_e_rules[[i]],list_p_rules[[i]], list_nonterminals_vec_short[[i]],list_nonterminals_vec_long[[i]],list_type_matrix[[i]],list_epsilon_matrix[[i]],list_terminals_matrix[[i]],list_permutations_vec[[i]]) 
