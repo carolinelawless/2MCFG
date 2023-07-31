@@ -7,11 +7,11 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 10000
-number_sentences<- 20
-len<- 50
-alpha1 <- 0.1 #scaling parameter for DP over nonterminals
-alpha2 <- 0.1 #scaling parameter for DP over rules
+M<- 50000
+number_sentences<- 50
+len<- 30
+alpha1 <- 0.2 #scaling parameter for DP over nonterminals
+alpha2 <- 0.2 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
