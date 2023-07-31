@@ -7,9 +7,9 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 50000
-number_sentences<- 50
-len<- 30
+M<- 500
+number_sentences<- 10
+len<- 10
 alpha1 <- 0.1 #scaling parameter for DP over nonterminals
 alpha2 <- 0.1 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
@@ -22,8 +22,6 @@ description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_a
 print(description)
 
 terminals<- c("a","b","c")
-
-
 
 sentences<- list()
 
