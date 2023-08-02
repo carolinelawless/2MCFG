@@ -72,7 +72,7 @@ dp_random2<- function(nonterminal,minimum,maximum){
       rule<- p_rules_star[[samp]]
       rule_index<- p_rules_star_indices[samp]
     }else{#old emission
-      samp<- sample(1:length(e_rules_frequencies_star),1)
+      samp<- sample(1:length(e_rules_frequencies_star),1, prob = e_rules_frequencies_star)
       rule<- e_rules_star[[samp]]
       rule_index<- e_rules_star_indices[samp]
       if(rule[2]=="" | rule[[3]]==""){
