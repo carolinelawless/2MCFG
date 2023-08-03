@@ -6,33 +6,40 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "copy"
-M<- 2000
-number_sentences<- 100
+g<- "monkey"
+M<- 100
+number_sentences<- 646
 len<- 30
-alpha1 <- 1 #scaling parameter for DP over nonterminals
-alpha2 <- 1 #scaling parameter for DP over rules
+alpha1 <- 0.5 #scaling parameter for DP over nonterminals
+alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
 c2<- 10
-permutations_param<- 0.1
+permutations_param<- 0.01
 
-description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
+#description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
+description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param)
 print(description)
 
-terminals<- c("a","b","c")
+terminals<- c("X","r","p")
 
 sentences<- list()
-
-for(i in 1:number_sentences){
-  sent_short<- sample(terminals,len/2,replace = TRUE)
-  if(g=="copy"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-  }else if(g=="doubles"){
-    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-  }
+data<- read.table("corpusX2.txt", header = TRUE)
+data<- as.matrix(data)
+data<- as.vector(data)
+for(i in 1:length(data)){
+  sentences[[length(sentences)+1]]<- s2c(data[i])
 }
+
+#for(i in 1:number_sentences){
+##  sent_short<- sample(terminals,len/2,replace = TRUE)
+###  if(g=="copy"){
+####    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+####  }else if(g=="doubles"){
+#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+#  }
+#}
 
 
 ESS<- vector(length = length(sentences))
@@ -330,6 +337,9 @@ for(QQ in 1:Q){
     s2<- simulated_sentence[seq(2,length(simulated_sentence),2)]
     z = rle(rle(simulated_sentence)$lengths %% 2)
     edit_distance[[QQ]]<- sum(ceiling(z$lengths[z$values == 1] / 2))
+  }else if(g=="monkey"){
+  s1<- 1
+  s2<- 2
   }
   s1<- paste0(s1,collapse = "")
   s2<- paste0(s2,collapse = "")
