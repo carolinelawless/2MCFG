@@ -7,7 +7,7 @@ library(LaplacesDemon)
 tic()
 
 g<- "copy"
-M<- 1000
+M<- 5000
 number_sentences<- 100
 len<- 30
 alpha1 <- 2 #scaling parameter for DP over nonterminals
