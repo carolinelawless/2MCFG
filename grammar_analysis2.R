@@ -6,40 +6,40 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "monkey"
+g<- "copy"
 M<- 1000
-number_sentences<- 646
+number_sentences<- 200
 len<- 30
-alpha1 <- 0.5 #scaling parameter for DP over nonterminals
-alpha2 <- 0.5 #scaling parameter for DP over rules
+alpha1 <- 2 #scaling parameter for DP over nonterminals
+alpha2 <- 2 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
 c2<- 10
 permutations_param<- 0.01
 
-#description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
-description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param)
+description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
+#description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param)
 print(description)
 
-terminals<- c("X","r","p")
-
+#terminals<- c("X","r","p")
+terminals<- c("a","b","c")
 sentences<- list()
-data<- read.table("corpusX2.txt", header = TRUE)
-data<- as.matrix(data)
-data<- as.vector(data)
-for(i in 1:length(data)){
-  sentences[[length(sentences)+1]]<- s2c(data[i])
-}
-
-#for(i in 1:number_sentences){
-##  sent_short<- sample(terminals,len/2,replace = TRUE)
-###  if(g=="copy"){
-####    sentences[[length(sentences)+1]]<- rep(sent_short,2)
-####  }else if(g=="doubles"){
-#    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
-#  }
+#data<- read.table("corpusX2.txt", header = TRUE)
+#data<- as.matrix(data)
+#data<- as.vector(data)
+#for(i in 1:length(data)){
+#  sentences[[length(sentences)+1]]<- s2c(data[i])
 #}
+
+for(i in 1:number_sentences){
+  sent_short<- sample(terminals,len/2,replace = TRUE)
+  if(g=="copy"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+  }else if(g=="doubles"){
+    sentences[[length(sentences)+1]]<- rep(sent_short,each=2)
+  }
+}
 
 
 ESS<- vector(length = length(sentences))
