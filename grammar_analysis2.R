@@ -6,7 +6,7 @@ library(LaplacesDemon)
 
 tic()
 
-g<- "monkey"
+g<- "copy"
 M<- 1000
 number_sentences<- 200
 len<- 30
