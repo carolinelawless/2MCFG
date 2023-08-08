@@ -119,8 +119,10 @@ if(g =="copy"){
   r_object2[[29]]<- list_number_permutations
   r_object2[[30]]<- list_number_permutations_3
   r_object2[[31]]<- list_number_permutations_10
-  
+
+  print(description)
+
   toc()
-  
+
   filename<- paste0(Sys.Date(),"_",description,"_analysis")
   save(r_object2,file=filename)
