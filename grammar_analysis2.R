@@ -7,7 +7,7 @@ library(LaplacesDemon)
 tic()
 
 g<- "monkey"
-M<- 500
+M<- 1000
 number_sentences<- 200
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
