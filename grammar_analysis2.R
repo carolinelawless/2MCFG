@@ -8,7 +8,7 @@ start<- Sys.time()
 tic()
 
 g<- "monkey"
-M<- 1
+M<- 1000
 number_sentences<- 200
 len<- 30
 alpha1 <- 0.1 #scaling parameter for DP over nonterminals
