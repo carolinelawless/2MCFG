@@ -7,17 +7,17 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "monkey"
-M<- 1000
+g<- "copy"
+M<- 1
 number_sentences<- 200
 len<- 30
-alpha1 <- 0.1 #scaling parameter for DP over nonterminals
+alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
 c2<- 10
-permutations_param<- 0.1
+permutations_param<- 0.01
 sentences<- list()
 
 if(g =="copy"){
