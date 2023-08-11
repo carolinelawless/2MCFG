@@ -11,7 +11,7 @@ g<- "copy"
 M<- 1000
 number_sentences<- 200
 len<- 30
-alpha1 <- 2 #scaling parameter for DP over nonterminals
+alpha1 <- 2.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
