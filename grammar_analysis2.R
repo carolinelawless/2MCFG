@@ -86,7 +86,7 @@ if(g =="copy"){
   e_rules_ordered[[2]]
   e_rules_ordered[[3]]
 
-  time<- Sys.time() - start
+  duration<- Sys.time() - start
 
   r_object2<-list()
   r_object2[[1]]<- description
@@ -94,7 +94,7 @@ if(g =="copy"){
   r_object2[[3]]<- ug_frequencies 
   #r_object2[[4]]<- e_rules #too long to load
   r_object2[[2]]<- sentences
-  r_object2[[4]]<- time
+  r_object2[[4]]<- duration
   r_object2[[5]]<- e_rules_ordered
   r_object2[[6]]<- e_rules_frequencies
   r_object2[[7]]<- p_rules_ordered
