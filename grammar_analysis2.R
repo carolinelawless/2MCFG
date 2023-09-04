@@ -28,7 +28,7 @@ if(g =="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }
   }else if(g== "monkey"){
-    data1<- "data_rpfirst.txt"
+    data1<- "data_noX.txt"
     description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
     terminals<- c("X","r","p")
     data<- read.table(data1, header = TRUE)
