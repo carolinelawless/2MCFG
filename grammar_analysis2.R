@@ -7,8 +7,8 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "copy"
-M<- 1000
+g<- "monkey"
+M<- 1
 number_sentences<- 325
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
@@ -28,9 +28,10 @@ if(g =="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }
   }else if(g== "monkey"){
-    description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param)
+    data1<- "data_rp.txt"
+    description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
     terminals<- c("X","r","p")
-    data<- read.table("corpusX2.txt", header = TRUE)
+    data<- read.table(data1, header = TRUE)
     data<- as.matrix(data)
     data<- as.vector(data)
     for(i in 1:length(data)){
