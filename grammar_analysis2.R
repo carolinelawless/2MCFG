@@ -124,6 +124,8 @@ if(g =="copy"){
   r_object2[[30]]<- list_number_permutations_3
   r_object2[[31]]<- list_number_permutations_10
 
+source("simulate_sentences.R")
+
   print(description)
 
   toc()
