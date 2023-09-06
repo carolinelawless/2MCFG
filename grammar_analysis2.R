@@ -7,9 +7,9 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "monkey"
-M<- 2000
-number_sentences<- 325
+g<- "copy"
+M<- 1000
+number_sentences<- 10
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
