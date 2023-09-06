@@ -9,7 +9,7 @@ tic()
 
 g<- "copy"
 M<- 1000
-number_sentences<- 60
+number_sentences<- 70
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
