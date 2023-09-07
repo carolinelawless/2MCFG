@@ -8,9 +8,9 @@ start<- Sys.time()
 tic()
 
 g<- "mix"
-M<- 1000
+M<- 5000
 number_sentences<- 200
-len<- 30
+len<- 10
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
