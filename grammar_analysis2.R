@@ -7,10 +7,10 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "copy"
-M<- 5000
-number_sentences<- 31
-len<- 30
+g<- "mix"
+M<- 2000
+number_sentences<- 200
+len<- 10
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
@@ -37,7 +37,19 @@ if(g =="copy"){
     for(i in 1:length(data)){
       sentences[[length(sentences)+1]]<- s2c(data[i])
     }
+  }else if(g== "mix"){
+  description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
+  terminals<- c("a","b","c")
+  for(i in 1:number_sentences){
+    sent_short<- sample(terminals,len/2,replace = TRUE)
+    samp<- sample(0:1,1)
+    if(samp == 0){
+    sentences[[length(sentences)+1]]<- rep(sent_short,2)
+    }else if(samp ==1){
+    sentences[[length(sentences)+1]]<- rep(sent_short, each = 2)
+    }
   }
+}
   print(description)
   
   ESS<- vector(length = length(sentences))
