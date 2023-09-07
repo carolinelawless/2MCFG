@@ -8,8 +8,8 @@ start<- Sys.time()
 tic()
 
 g<- "copy"
-M<- 1000
-number_sentences<- 10
+M<- 5000
+number_sentences<- 1
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
