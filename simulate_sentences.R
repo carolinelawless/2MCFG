@@ -239,28 +239,30 @@ for(QQ in 1:Q){
     simulated_sentence<- simulated_sentence[-(which(is.na(simulated_sentence)))]
   }
   
-  if(g=="copy"){
+  if(g=="copy" | g=="mix"){
     cut<- round(length(simulated_sentence)/2)
     s1<- simulated_sentence[1:cut]
     s2<- simulated_sentence[(cut+1):length(simulated_sentence)]
     s1<- paste0(s1,collapse = "")
     s2<- paste0(s2,collapse = "")
-    edit_distance[QQ]<- adist(s1,s2)
-  }else if(g=="doubles"){
+    if(s1 == s2){qq<- qq+1}
+    #edit_distance[QQ]<- adist(s1,s2)
+  }else if(g=="doubles" | g=="mix"){
     s1<- simulated_sentence[seq(1,length(simulated_sentence),2)]
     s2<- simulated_sentence[seq(2,length(simulated_sentence),2)]
     z = rle(rle(simulated_sentence)$lengths %% 2)
     edit_distance[[QQ]]<- sum(ceiling(z$lengths[z$values == 1] / 2))
+    s1<- paste0(s1,collapse = "")
+    s2<- paste0(s2,collapse = "")
+    if(s1 == s2){qq<- qq+1}
   }else if(g=="monkey"){
     s1<- 1
     s2<- 2
   }
-  s1<- paste0(s1,collapse = "")
-  s2<- paste0(s2,collapse = "")
   sentence_length[QQ]<- length(simulated_sentence)
   sim_sentences[[length(sim_sentences)+1]]<- simulated_sentence
-  if(s1 == s2){qq<- qq+1}
+
 }
-print(description)
+#print(description)
 print("proportion of correct estimates:")
 print(qq/Q)
