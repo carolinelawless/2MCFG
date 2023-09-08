@@ -9,7 +9,7 @@ tic()
 
 g<- "mix"
 M<- 50000
-number_sentences<- 50
+number_sentences<- 100
 len<- 10
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
