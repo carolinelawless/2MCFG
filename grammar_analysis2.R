@@ -7,10 +7,10 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "copy"
-M<- 5000
-number_sentences<- 200
-len<- 30
+g<- "mix"
+M<- 50000
+number_sentences<- 50
+len<- 10
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
