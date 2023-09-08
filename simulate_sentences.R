@@ -264,5 +264,6 @@ for(QQ in 1:Q){
 
 }
 #print(description)
+proportion<- qq/Q
 print("proportion of correct estimates:")
-print(qq/Q)
+print(proportion)
