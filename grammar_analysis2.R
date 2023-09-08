@@ -7,8 +7,8 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "mix"
-M<- 10000
+g<- "monkey"
+M<- 20000
 number_sentences<- 200
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
