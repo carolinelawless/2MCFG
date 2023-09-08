@@ -101,6 +101,8 @@ if(g =="copy"){
 
   duration<- Sys.time() - start
 
+source("simulate_sentences.R")
+
   r_object2<-list()
   r_object2[[1]]<- description
   #r_object2[[2]]<- ug #too long to load
@@ -118,10 +120,10 @@ if(g =="copy"){
   r_object2[[12]]<- epsilon_matrix
   r_object2[[13]]<- terminals_matrix
   r_object2[[14]]<- permutations_vec
-  r_object2[[15]]<- NA
-  r_object2[[16]]<- NA
+  r_object2[[15]]<- sim_sentences
+  r_object2[[16]]<- sentence_length
   r_object2[[17]]<- NA
-  r_object2[[18]]<- NA
+  r_object2[[18]]<- qq/Q
   r_object2[[19]]<- ESS
   r_object2[[20]]<- list_number_p_rules
   r_object2[[21]]<- list_number_e_rules
@@ -135,8 +137,6 @@ if(g =="copy"){
   r_object2[[29]]<- list_number_permutations
   r_object2[[30]]<- list_number_permutations_3
   r_object2[[31]]<- list_number_permutations_10
-
-source("simulate_sentences.R")
 
   print(description)
 
