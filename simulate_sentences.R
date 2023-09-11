@@ -22,7 +22,7 @@ for(QQ in 1:Q){
     colnames(tree_matrix)<- c("ind_1","ind_2","n_children","type","min","max","B","nrows")
     tree_matrix[1,2]<- 1
     tree_matrix[1, 5]<- 3
-    tree_matrix[1, 6]<- 20
+    tree_matrix[1, 6]<- 100
     tree_matrix[1, 7]<- 1
     tree_matrix[1,8]<- 1
     left_functions<- list()
