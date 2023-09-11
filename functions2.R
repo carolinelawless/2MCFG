@@ -36,6 +36,7 @@ dp_random2<- function(nonterminal,minimum,maximum){
     proba_epsilon<- rbeta(1,epsilon_matrix[index1,2],epsilon_matrix[index1,3])
     
     draw2<- sample(0:1,1,prob=c((1-proba_emission),proba_emission))
+    if(tree_matrix[row,5]>2){draw2<- 0}
     draws<- c(draws,draw2)
     if(draw2==0){#new production
       if(maximum == 1){stop<- TRUE}
@@ -83,103 +84,4 @@ dp_random2<- function(nonterminal,minimum,maximum){
     }
   }
   return(list(rule,stop,draws,permutation1,rule_index))
-}
-
-evaluate<- function(string1,x,numb){
-  w<- which(string1==numb)
-  s<- append(string1,x,after=w)
-  s<- s[-w]
-  return(s)
-}
-
-update<- function(min_or_max){
-  if(row !=1){
-    tm<- tree_matrix
-    l<- length(rows)
-    if(min_or_max == "min"){
-      for(i in 1:(l-1)){
-        par<- rows[l-i]
-        ch<- which(tm[,1] == par)
-        tm[par,5]<- max(tm[par,5], sum(tm[ch,5]))
-      }
-      for(node in 2:nrow(tm)){
-        par<- tm[node,1]
-        ch<- which(tm[,1]==par)
-        update<- tm[par,6] - sum(tm[ch,5]) + tm[node,5]
-        tm[node,6]<- min(tm[node,6], update)
-      }
-    }else if(min_or_max== "max"){
-      for(i in 1:(l-1)){
-        par<- rows[l-i]
-        ch<- which(tm[,1] == par)
-        tm[par,6]<- min(tm[par,6], sum(tm[ch,6]))
-      }
-      for(node in 2:nrow(tm)){
-        par<- tm[node,1]
-        ch<- which(tm[,1]==par)
-        update<- tm[par,5] - sum(tm[ch,6]) + tm[node,6]
-        tm[node,5]<- max(tm[node,5], update)
-      }
-    }
-    return(tm)
-  }else{return(tree_matrix)}
-}
-
-weight_e2<- function(nonterminal){
-  w<- 1
-  
-  nt_ind<- which(terminals_matrix[,1]==nonterminal)
-  if(x!=""){
-    x_ind<- which(terminals == x)
-    d1<- terminals_matrix[nt_ind,(x_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
-    w<- w*d1
-  }
-  if(y!=""){
-    y_ind<- which(terminals == y)
-    d2<- terminals_matrix[nt_ind,(y_ind+1)]/(sum(terminals_matrix[nt_ind,2:(length(terminals)+1)]))
-    w<- w*d2
-  }
-  
-  freq<- 0
-  if(side=="left"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==x & e_rules[[i]][[3]]==y){
-        freq<- freq+1
-      }
-    }
-  }else if(side=="right"){
-    for(i in 1:length(e_rules)){
-      if(e_rules[[i]][[1]]==nonterminal & e_rules[[i]][[2]]==y & e_rules[[i]][[3]]==x){
-        freq<- freq+1
-      }
-    }
-  }
-  ind_emission<- which(type_matrix[,1]==nonterminal)
-  ind_epsilon<- which(epsilon_matrix[,1]== nonterminal)
-  proba_epsilon_expected<- epsilon_matrix[ind_epsilon,2]/(epsilon_matrix[ind_epsilon,2] + epsilon_matrix[ind_epsilon,3])
-  proba_emission_expected<- type_matrix[ind_emission,2]/(type_matrix[ind_emission,2]+ type_matrix[ind_emission,3])
-  if(x!="" & y!= ""){
-    w<- w + freq/(proba_emission_expected*(1-proba_epsilon_expected))
-  }else{
-    w<- w + freq/(proba_emission_expected*proba_epsilon_expected/2)
-  }
-  
-  return(w)
-}
-
-
-unique_ordered <- function(x) {
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  index_ux<-order(tab,decreasing=TRUE)
-  ux_ordered<- ux[index_ux]
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(ux_ordered)
-}
-
-unique_frequencies<- function(x){
-  ux <- unique(x)
-  tab<- tabulate(match(x,ux))
-  frequencies<- sort(tab,decreasing = TRUE)
-  return(frequencies)
 }
