@@ -21,7 +21,7 @@ list_max_nonterminals<- list()
 vec_max_nonterminals<- vector(length = M)
 
 for(i in 1:M){
-  list_nonterminals_vec_long[[i]]<- 1
+  list_nonterminals_vec_long[[i]]<- vector()
   list_nonterminals_vec_short[[i]]<- vector()
   list_p_rules[[i]]<- list()
   list_p_rules_short[[i]]<- list()
@@ -45,7 +45,7 @@ weights<- rep(1,M)
 
 for(ss in 1:length(sentences)){
   print(paste0("ss=",ss))
-
+  
   number_nonterminals_vec<- vector(length = M)  
   number_p_rules_vec<- vector(length = M)
   number_e_rules_vec<- vector(length = M)
@@ -535,21 +535,21 @@ for(ss in 1:length(sentences)){
     weights[i]<- w
     
     
-  number_nonterminals_vec[i]<- max(nonterminals_vec_long)
-  number_nonterminals_vec_3[i]<- length(which(table(nonterminals_vec_long)>3))
-  number_nonterminals_vec_10[i]<- length(which(table(nonterminals_vec_long)>10))
-
-  number_p_rules_vec[i]<- length(unique_frequencies(p_rules_short))
-  number_p_rules_vec_3[i]<- length(which(unique_frequencies(p_rules_short)>3))
-  number_p_rules_vec_10[i]<- length(which(unique_frequencies(p_rules_short)>10))
-  
-  number_e_rules_vec[i]<- length(unique_frequencies((e_rules))) 
-  number_e_rules_vec_3[i]<- length(which(unique_frequencies(e_rules)>3)) 
-  number_e_rules_vec_10[i]<- length(which(unique_frequencies(e_rules)>10)) 
-  
-  number_permutations_vec[i]<- length(which(permutations_vec > permutations_param))
-  number_permutations_vec_3[i]<- length(which(permutations_vec >= (permutations_param + 3)))
-  number_permutations_vec_10[i]<- length(which(permutations_vec >= (permutations_param + 10)))
+    number_nonterminals_vec[i]<- max(nonterminals_vec_long)
+    number_nonterminals_vec_3[i]<- length(which(table(nonterminals_vec_long)>3))
+    number_nonterminals_vec_10[i]<- length(which(table(nonterminals_vec_long)>10))
+    
+    number_p_rules_vec[i]<- length(unique_frequencies(p_rules_short))
+    number_p_rules_vec_3[i]<- length(which(unique_frequencies(p_rules_short)>3))
+    number_p_rules_vec_10[i]<- length(which(unique_frequencies(p_rules_short)>10))
+    
+    number_e_rules_vec[i]<- length(unique_frequencies((e_rules))) 
+    number_e_rules_vec_3[i]<- length(which(unique_frequencies(e_rules)>3)) 
+    number_e_rules_vec_10[i]<- length(which(unique_frequencies(e_rules)>10)) 
+    
+    number_permutations_vec[i]<- length(which(permutations_vec > permutations_param))
+    number_permutations_vec_3[i]<- length(which(permutations_vec >= (permutations_param + 3)))
+    number_permutations_vec_10[i]<- length(which(permutations_vec >= (permutations_param + 10)))
   }
   list_number_p_rules[[length(list_number_p_rules)+1]]<- number_p_rules_vec
   list_number_e_rules[[length(list_number_e_rules)+1]]<- number_e_rules_vec
