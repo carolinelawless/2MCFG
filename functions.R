@@ -6,12 +6,16 @@ draw_nt<- function(n){
   ntv<-nonterminals_vec_long
   for(i in 1:n){
     if(length(ntv)==0){
-      nt[i]<- 1
+      nt[i]<- 2
     }else{
       draw<- sample(c("new","old"),1,prob=c(alpha1,length(ntv)))
       if(draw=="old"){
         tab<- table(ntv)
-        s<- sample(1:length(tab), 1, replace= TRUE, prob = (tab + C_nonterminals))
+        if(length(tab)==1){
+          s<- 2
+        }else{
+          s<- sample(2:(length(tab)+1), 1, replace= TRUE, prob = (tab + C_nonterminals))
+        }
         nt[i]<- s
         w<- w*(tab[s]/sum(tab)/((tab[s]+C_nonterminals)/sum(tab + C_nonterminals)))
       }else if(draw=="new"){
@@ -117,10 +121,10 @@ kernel_parameters_function<- function(nonterminal,minimum,maximum){
   q = length(which(nonterminals_vec_short == nonterminal)) #number of p_rules
   if(length(e_rules)>0){
     for(i in 1:length(e_rules)){
-        e_rule<- e_rules[[i]]
-        if(e_rule[1]== nonterminal){q<- q+1} #+ number of e_rules
-      }
+      e_rule<- e_rules[[i]]
+      if(e_rule[1]== nonterminal){q<- q+1} #+ number of e_rules
     }
+  }
   
   if(minimum == 1 & maximum > 2){
     proba_emission_star<- proba_emission
