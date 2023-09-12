@@ -8,8 +8,8 @@ start<- Sys.time()
 tic()
 
 g<- "mix"
-M<- 10
-number_sentences<- 10
+M<- 500
+number_sentences<- 200
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
