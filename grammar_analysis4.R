@@ -142,7 +142,7 @@ e_rules_ordered[[3]]
 
 duration<- Sys.time() - start
 
-source("simulate_sentences4.R")
+source("simulate_sentences.R")
 
 r_object2<-list()
 r_object2[[1]]<- description
