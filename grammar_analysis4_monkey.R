@@ -47,7 +47,7 @@ sentences<- list()
 
 
 data1<- "data_rp.txt"
-description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
+description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1, "_init=",number_initiations)
 terminals<- c("X","r","p")
 data<- read.table(data1, header = TRUE)
 data<- as.matrix(data)
