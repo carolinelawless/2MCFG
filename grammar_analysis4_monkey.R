@@ -9,7 +9,7 @@ tic()
 
 number_initiations<- 3
 g<- "monkey"
-M<- 5000
+M<- 20000
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
