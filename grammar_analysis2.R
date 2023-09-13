@@ -7,8 +7,8 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-g<- "mix"
-M<- 50000
+g<- "monkey"
+M<- 10000
 number_sentences<- 100
 len<- 10
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
@@ -28,15 +28,20 @@ if(g =="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }
   }else if(g== "monkey"){
-    data1<- "data_rp.txt"
-    description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
-    terminals<- c("X","r","p")
-    data<- read.table(data1, header = TRUE)
-    data<- as.matrix(data)
-    data<- as.vector(data)
-    for(i in 1:length(data)){
-      sentences[[length(sentences)+1]]<- s2c(data[i])
-    }
+  data1<- "data_rp.txt"
+  description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
+  terminals<- c("X","r","p")
+  data<- read.table(data1, header = FALSE)
+  data<- as.matrix(data)
+  data<- as.vector(data)
+  len<- vector(length = length(data))
+  for(i in 1:length(data)){
+    sent<- data[i]
+    sent<- s2c(sent)
+    len[i]<- length(sent)
+    sentences[[length(sentences)+1]]<- sent
+  }
+  sentences<- sentences[order(len)]
   }else if(g== "mix"){
   description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
   terminals<- c("a","b","c")
