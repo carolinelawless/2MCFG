@@ -7,9 +7,9 @@ library(LaplacesDemon)
 start<- Sys.time()
 tic()
 
-number_initiations<- 5
+number_initiations<- 3
 g<- "monkey"
-M<- 2
+M<- 10000
 len<- 30
 alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
@@ -180,4 +180,4 @@ print(description)
 toc()
 
 filename<- paste0(Sys.Date(),"_",description,"_analysis")
-#save(r_object2,file=filename)
+save(r_object2,file=filename)
