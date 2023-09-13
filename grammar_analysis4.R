@@ -108,7 +108,7 @@ for(i in 1:number_sentences2){
 
 M<- 2*M
 
-source("SMC.R")
+source("SMC4.R")
 
 list_grammars_all<- list()
 for(i in 1:M){
