@@ -62,8 +62,9 @@ for(QQ in 1:Q){
         right_functions[[row]]<- as.list(rule[[4]])
         nc <- 2 #number of children
         nr <- nrow(tree_matrix) #number of rows
+        tree_matrix[row,8]<- nr
         for(cc in 1:nc){
-          tree_matrix <-rbind(tree_matrix, c(row, nr + cc, rep(NA, 2), 1, maximum - nc + 1, rule[[2]][cc],nr+nc))
+          tree_matrix <-rbind(tree_matrix, c(row, nr + cc, rep(NA, 2), 1, maximum - nc + 1, rule[[2]][cc],NA))
           left_functions[[nr + cc]] <- list()
           right_functions[[nr + cc]] <- list()
         }
@@ -261,7 +262,7 @@ for(QQ in 1:Q){
   }
   sentence_length[QQ]<- length(simulated_sentence)
   sim_sentences[[length(sim_sentences)+1]]<- simulated_sentence
-
+  
 }
 #print(description)
 proportion<- qq/Q
