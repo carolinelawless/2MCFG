@@ -12,7 +12,7 @@ M<- 60000
 number_sentences<- 100
 len<- 10
 alpha1 <- 1 #scaling parameter for DP over nonterminals
-alpha2 <- 0.5 #scaling parameter for DP over rules
+alpha2 <- 1 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
 c1<- 1 #Beta parameters for epsilon
