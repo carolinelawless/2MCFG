@@ -41,7 +41,7 @@ if(g =="copy"){
     len[i]<- length(sent)
     sentences[[length(sentences)+1]]<- sent
   }
-  sentences<- sentences[order(len)]
+  #sentences<- sentences[order(len)]
   }else if(g== "mix"){
   description<- paste0("G=",g,"_M=",M,"_S=",number_sentences,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_len=",len,"_P=",permutations_param)
   terminals<- c("a","b","c")
