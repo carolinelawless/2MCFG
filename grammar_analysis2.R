@@ -8,10 +8,10 @@ start<- Sys.time()
 tic()
 
 g<- "monkey"
-M<- 20000
+M<- 10000
 number_sentences<- 100
 len<- 10
-alpha1 <- 1 #scaling parameter for DP over nonterminals
+alpha1 <- 0.5 #scaling parameter for DP over nonterminals
 alpha2 <- 0.5 #scaling parameter for DP over rules
 b1<- 10 #Beta parameters for type = emission
 b2<- 10
@@ -28,7 +28,7 @@ if(g =="copy"){
     sentences[[length(sentences)+1]]<- rep(sent_short,2)
   }
   }else if(g== "monkey"){
-  data1<- "data_rp.txt"
+  data1<- "data_rp_first.txt"
   description<- paste0("G=",g,"_M=",M,"_alpha1=",alpha1,"_alpha2=",alpha2,"_b1=",b1,"_c2=",c2,"_P=",permutations_param,"_data=",data1)
   terminals<- c("X","r","p")
   data<- read.table(data1, header = FALSE)
